@@ -1,0 +1,382 @@
+import React, { useState, useEffect } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { SiGoogle } from 'react-icons/si';
+import { FaMicrosoft } from 'react-icons/fa';
+import { Building2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import TypingText from './TypingText';
+
+interface OnboardingProps {
+    // Add any props that might be passed from the backend
+}
+
+export default function CompanyOnboarding({}: OnboardingProps) {
+    const { data, setData, post, processing, errors } = useForm({
+        email: '',
+    });
+
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [showContent, setShowContent] = useState(false);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+        };
+    }, []);
+
+    const handleTypingComplete = () => {
+        setShowContent(true);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // TODO: Implement the actual form submission
+        post('/company/onboarding', {
+            preserveScroll: true,
+        });
+    };
+
+    const handleOAuthRedirect = (provider: string) => {
+        window.location.href = `/auth/${provider}`;
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.5,
+                ease: 'easeOut' as const,
+            },
+        },
+    };
+
+    return (
+        <>
+            <Head title="Company Onboarding" />
+            <div className="relative flex min-h-svh items-center justify-center overflow-hidden p-6 md:p-10" style={{ backgroundColor: '#F4F5ED' }}>
+                <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                        background: `
+                            radial-gradient(circle at 15% 25%, rgba(205, 86, 86, 0.12) 0%, transparent 45%),
+                            radial-gradient(circle at 85% 75%, rgba(218, 108, 108, 0.10) 0%, transparent 50%),
+                            radial-gradient(circle at 50% 50%, rgba(175, 62, 62, 0.08) 0%, transparent 55%)
+                        `
+                    }}
+                />
+                
+                <div className="absolute inset-0 pointer-events-none">
+                    <div 
+                        className="absolute top-10 left-5 w-96 h-96 rounded-full blur-3xl opacity-[0.20]"
+                        style={{ backgroundColor: '#CD5656' }}
+                    />
+                    <div 
+                        className="absolute bottom-10 right-5 w-[32rem] h-[32rem] rounded-full blur-3xl opacity-[0.18]"
+                        style={{ backgroundColor: '#DA6C6C' }}
+                    />
+                    <div 
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] h-[28rem] rounded-full blur-3xl opacity-[0.15]"
+                        style={{ backgroundColor: '#AF3E3E' }}
+                    />
+                    
+                    <div 
+                        className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full blur-2xl opacity-[0.12]"
+                        style={{ backgroundColor: '#CD5656' }}
+                    />
+                    <div 
+                        className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full blur-2xl opacity-[0.10]"
+                        style={{ backgroundColor: '#DA6C6C' }}
+                    />
+                    
+                    <div 
+                        className="absolute top-0 left-1/3 w-px h-full opacity-[0.08]"
+                        style={{ 
+                            background: 'linear-gradient(to bottom, transparent, rgba(205, 86, 86, 0.3), transparent)',
+                        }}
+                    />
+                    <div 
+                        className="absolute top-0 right-1/3 w-px h-full opacity-[0.08]"
+                        style={{ 
+                            background: 'linear-gradient(to bottom, transparent, rgba(218, 108, 108, 0.3), transparent)',
+                        }}
+                    />
+                </div>
+
+                <div 
+                    className="absolute inset-0 pointer-events-none opacity-[0.05]"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(30deg, transparent 40%, rgba(205, 86, 86, 0.1) 50%, transparent 60%),
+                            linear-gradient(120deg, transparent 40%, rgba(218, 108, 108, 0.1) 50%, transparent 60%)
+                        `,
+                        backgroundSize: '200px 200px',
+                    }}
+                />
+
+                <div
+                    className="absolute pointer-events-none transition-all duration-700 ease-out"
+                    style={{
+                        left: `${mousePosition.x}px`,
+                        top: `${mousePosition.y}px`,
+                        transform: 'translate(-50%, -50%)',
+                        width: '400px',
+                        height: '400px',
+                        borderRadius: '50%',
+                        background: 'radial-gradient(circle, rgba(205, 86, 86, 0.15) 0%, rgba(218, 108, 108, 0.08) 40%, transparent 70%)',
+                        filter: 'blur(60px)',
+                        opacity: 0.6,
+                        zIndex: 1,
+                    }}
+                />
+
+                <motion.div
+                    className="relative z-10 w-full max-w-md"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <motion.div
+                        className="flex flex-col gap-10"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <div className="flex flex-col gap-4 text-center">
+                            <motion.div
+                                className="flex justify-center mb-2"
+                                variants={itemVariants}
+                                initial="hidden"
+                                animate={showContent ? "visible" : "hidden"}
+                                style={{ 
+                                    opacity: showContent ? 1 : 0,
+                                    visibility: showContent ? 'visible' : 'hidden'
+                                }}
+                            >
+                                <div 
+                                    className="p-3 rounded-xl"
+                                    style={{ 
+                                        backgroundColor: 'rgba(205, 86, 86, 0.1)',
+                                    }}
+                                >
+                                    <Building2 
+                                        className="w-6 h-6 md:w-7 md:h-7"
+                                        style={{ color: '#CD5656' }}
+                                    />
+                                </div>
+                            </motion.div>
+                            
+                            <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl min-h-[3rem] md:min-h-[4rem] flex items-center justify-center">
+                                <TypingText
+                                    text="Ready to Join? Let's Build Your Company Profile"
+                                    speed={60}
+                                    onComplete={handleTypingComplete}
+                                />
+                            </h1>
+                            
+                            <motion.p
+                                className="text-base text-muted-foreground md:text-lg"
+                                variants={itemVariants}
+                                initial="hidden"
+                                animate={showContent ? "visible" : "hidden"}
+                                style={{ 
+                                    opacity: showContent ? 1 : 0,
+                                    visibility: showContent ? 'visible' : 'hidden'
+                                }}
+                            >
+                                A quick, simple start. We'll tailor the experience
+                                based on your company.
+                            </motion.p>
+                        </div>
+
+                        <motion.div
+                            className="flex flex-col gap-6"
+                            variants={itemVariants}
+                            initial="hidden"
+                            animate={showContent ? "visible" : "hidden"}
+                            style={{ 
+                                opacity: showContent ? 1 : 0,
+                                visibility: showContent ? 'visible' : 'hidden'
+                            }}
+                        >
+                            <form
+                                onSubmit={handleSubmit}
+                                className="flex flex-col gap-6"
+                            >
+                                <div className="flex flex-col gap-2">
+                                    <label
+                                        htmlFor="email"
+                                        className="sr-only"
+                                    >
+                                        Work email
+                                    </label>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        value={data.email}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setData('email', e.target.value)
+                                        }
+                                        placeholder="Email address"
+                                        required
+                                        autoFocus
+                                        autoComplete="email"
+                                        className="h-12 w-full rounded-lg border px-4 text-base text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:outline-none focus:ring-0"
+                                        style={{
+                                            backgroundColor: '#F8F9F3',
+                                            borderColor: 'rgba(0, 0, 0, 0.1)',
+                                        }}
+                                        onFocus={(e) => {
+                                            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.3)';
+                                        }}
+                                        onBlur={(e) => {
+                                            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                                        }}
+                                        aria-label="Email address"
+                                        aria-invalid={errors.email ? 'true' : 'false'}
+                                        aria-describedby={
+                                            errors.email
+                                                ? 'email-error'
+                                                : undefined
+                                        }
+                                    />
+                                    {errors.email && (
+                                        <p
+                                            id="email-error"
+                                            className="text-sm text-destructive"
+                                            role="alert"
+                                        >
+                                            {errors.email}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="h-12 w-full rounded-lg text-white text-base font-medium transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 cursor-pointer flex items-center justify-center gap-2"
+                                    style={{ 
+                                        backgroundColor: processing ? '#AF3E3E' : '#CD5656',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (!processing) {
+                                            e.currentTarget.style.backgroundColor = '#AF3E3E';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (!processing) {
+                                            e.currentTarget.style.backgroundColor = '#CD5656';
+                                        }
+                                    }}
+                                >
+                                    {processing && (
+                                        <svg
+                                            className="animate-spin h-5 w-5 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                            />
+                                        </svg>
+                                    )}
+                                    <span>Continue</span>
+                                </button>
+                            </form>
+
+                            <div className="relative flex items-center gap-4">
+                                <div className="h-px flex-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }} />
+                                <span className="text-sm text-muted-foreground">
+                                    or continue with
+                                </span>
+                                <div className="h-px flex-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }} />
+                            </div>
+
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <button
+                                    type="button"
+                                    onClick={() => handleOAuthRedirect('google')}
+                                    className="flex h-12 flex-1 items-center justify-center rounded-lg border text-base font-medium transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm cursor-pointer"
+                                    style={{ 
+                                        borderColor: '#CD5656',
+                                        backgroundColor: 'transparent',
+                                        color: '#CD5656',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = '#CD5656';
+                                        e.currentTarget.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                        e.currentTarget.style.color = '#CD5656';
+                                    }}
+                                >
+                                    <SiGoogle
+                                        className="mr-2 h-5 w-5"
+                                        aria-hidden="true"
+                                    />
+                                    <span>Google</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleOAuthRedirect('microsoft')}
+                                    className="flex h-12 flex-1 items-center justify-center rounded-lg border text-base font-medium transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm cursor-pointer"
+                                    style={{ 
+                                        borderColor: '#CD5656',
+                                        backgroundColor: 'transparent',
+                                        color: '#CD5656',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor = '#CD5656';
+                                        e.currentTarget.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                        e.currentTarget.style.color = '#CD5656';
+                                    }}
+                                >
+                                    <FaMicrosoft
+                                        className="mr-2 h-5 w-5"
+                                        aria-hidden="true"
+                                    />
+                                    <span>Microsoft</span>
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </motion.div>
+            </div>
+        </>
+    );
+}
+
