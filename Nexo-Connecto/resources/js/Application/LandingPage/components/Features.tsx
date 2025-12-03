@@ -139,14 +139,6 @@ const Features = () => {
                     ))}
                 </motion.div>
             </div>
-            
-            {/* Mask effect at the bottom */}
-            <div 
-                className="absolute bottom-0 left-0 right-0 h-64 z-10 pointer-events-none"
-                style={{
-                    background: 'linear-gradient(to bottom, transparent 0%, #F4F5ED 100%)'
-                }}
-            />
         </section>
     );
 };
