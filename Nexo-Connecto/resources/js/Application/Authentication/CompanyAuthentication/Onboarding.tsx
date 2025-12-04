@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { SiGoogle } from 'react-icons/si';
 import { FaMicrosoft } from 'react-icons/fa';
 import { Building2, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import TypingText from './TypingText';
 import Tooltip from '@/components/Tooltip';
-import StepIndicator from '@/components/StepIndicator';
+import { createCompanyAccount } from '../requests';
+import Notification, { NotificationType } from '../../Notification';
 
 interface OnboardingProps {
     // Add any props that might be passed from the backend
 }
 
 export default function CompanyOnboarding({}: OnboardingProps) {
-    const { data, setData, post, processing, errors } = useForm({
-        email: '',
-    });
+    const { errors: pageErrors } = usePage().props as { errors?: Record<string, string> };
+    
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [processing, setProcessing] = useState(false);
+    const [notification, setNotification] = useState<{
+        type: NotificationType;
+        message: string;
+    } | null>(null);
+    
+    const errors = pageErrors || {};
 
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [showContent, setShowContent] = useState(false);
-    const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 4; // Adjust based on your onboarding steps
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -38,12 +45,30 @@ export default function CompanyOnboarding({}: OnboardingProps) {
         setShowContent(true);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement the actual form submission
-        post('/company/onboarding', {
-            preserveScroll: true,
-        });
+        setProcessing(true);
+        setNotification(null);
+
+        await createCompanyAccount(
+            { email, password },
+            {
+                onSuccess: () => {
+                    setProcessing(false);
+                },
+                onError: (message: string) => {
+                    setProcessing(false);
+                    setNotification({
+                        type: 'fail',
+                        message: message,
+                    });
+                },
+                onFinish: () => {
+                    setProcessing(false);
+                },
+                preserveScroll: true,
+            }
+        );
     };
 
     const handleOAuthRedirect = (provider: string) => {
@@ -76,6 +101,14 @@ export default function CompanyOnboarding({}: OnboardingProps) {
     return (
         <>
             <Head title="Company Onboarding" />
+            {notification && (
+                <Notification
+                    type={notification.type}
+                    message={notification.message}
+                    onClose={() => setNotification(null)}
+                    position="top-right"
+                />
+            )}
             <div className="relative flex min-h-svh flex-col overflow-hidden" style={{ backgroundColor: '#F4F5ED' }}>
                 {/* Background Elements - Cover entire page including header */}
                 <div 
@@ -144,23 +177,6 @@ export default function CompanyOnboarding({}: OnboardingProps) {
                             Nexo
                         </span>
                     </Link>
-                    
-                    {/* Step Indicator - Center */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2">
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : -10 }}
-                            transition={{ duration: 0.3, delay: 0.2 }}
-                            style={{ 
-                                visibility: showContent ? 'visible' : 'hidden'
-                            }}
-                        >
-                            <StepIndicator 
-                                currentStep={currentStep} 
-                                totalSteps={totalSteps}
-                            />
-                        </motion.div>
-                    </div>
                     
                     <Tooltip 
                         content="Click here for help" 
@@ -282,70 +298,137 @@ export default function CompanyOnboarding({}: OnboardingProps) {
                                 onSubmit={handleSubmit}
                                 className="flex flex-col gap-8"
                             >
-                                <div className="flex flex-col gap-2">
-                                    <label
-                                        htmlFor="email"
-                                        className="sr-only"
-                                    >
-                                        Work email
-                                    </label>
-                                    <input
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex flex-col gap-2">
+                                        <label
+                                            htmlFor="email"
+                                            className="sr-only"
+                                        >
+                                            Email address
+                                        </label>
+                                        <input
                                         id="email"
                                         type="email"
                                         name="email"
-                                        value={data.email}
+                                        value={email}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                            setData('email', e.target.value)
+                                            setEmail(e.target.value)
                                         }
-                                        placeholder="Email address"
-                                        required
-                                        autoFocus
-                                        autoComplete="email"
-                                        className="h-12 w-full rounded-xl border px-4 text-base text-foreground placeholder:text-muted-foreground transition-all duration-300 ease-out focus:outline-none focus:ring-0 font-outfit"
-                                        style={{
-                                            backgroundColor: '#F8F9F3',
-                                            borderColor: 'rgba(0, 0, 0, 0.08)',
-                                            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
-                                        }}
-                                        onFocus={(e) => {
-                                            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.2)';
-                                            e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.08), 0 0 0 3px rgba(205, 86, 86, 0.1)';
-                                            e.currentTarget.style.transform = 'translateY(-1px)';
-                                        }}
-                                        onBlur={(e) => {
-                                            e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)';
-                                            e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.03)';
-                                            e.currentTarget.style.transform = 'translateY(0)';
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (document.activeElement !== e.currentTarget) {
-                                                e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.12)';
-                                                e.currentTarget.style.boxShadow = '0 2px 4px 0 rgba(0, 0, 0, 0.05)';
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (document.activeElement !== e.currentTarget) {
+                                            placeholder="Email address"
+                                            required
+                                            autoFocus
+                                            autoComplete="email"
+                                            className="h-12 w-full rounded-xl border px-4 text-base text-foreground placeholder:text-muted-foreground transition-all duration-300 ease-out focus:outline-none focus:ring-0 font-outfit"
+                                            style={{
+                                                backgroundColor: '#F8F9F3',
+                                                borderColor: 'rgba(0, 0, 0, 0.08)',
+                                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+                                            }}
+                                            onFocus={(e) => {
+                                                e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.2)';
+                                                e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.08), 0 0 0 3px rgba(205, 86, 86, 0.1)';
+                                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                            }}
+                                            onBlur={(e) => {
                                                 e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)';
                                                 e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.03)';
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (document.activeElement !== e.currentTarget) {
+                                                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.12)';
+                                                    e.currentTarget.style.boxShadow = '0 2px 4px 0 rgba(0, 0, 0, 0.05)';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (document.activeElement !== e.currentTarget) {
+                                                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)';
+                                                    e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.03)';
+                                                }
+                                            }}
+                                            aria-label="Email address"
+                                            aria-invalid={errors.email ? 'true' : 'false'}
+                                            aria-describedby={
+                                                errors.email
+                                                    ? 'email-error'
+                                                    : undefined
                                             }
-                                        }}
-                                        aria-label="Email address"
-                                        aria-invalid={errors.email ? 'true' : 'false'}
-                                        aria-describedby={
-                                            errors.email
-                                                ? 'email-error'
-                                                : undefined
-                                        }
-                                    />
-                                    {errors.email && (
-                                        <p
-                                            id="email-error"
-                                            className="text-sm text-destructive font-outfit"
-                                            role="alert"
+                                        />
+                                        {errors.email && (
+                                            <p
+                                                id="email-error"
+                                                className="text-sm text-destructive font-outfit"
+                                                role="alert"
+                                            >
+                                                {errors.email}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <label
+                                            htmlFor="password"
+                                            className="sr-only"
                                         >
-                                            {errors.email}
-                                        </p>
-                                    )}
+                                            Password
+                                        </label>
+                                        <input
+                                            id="password"
+                                            type="password"
+                                            name="password"
+                                            value={password}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                setPassword(e.target.value)
+                                            }
+                                            placeholder="Password"
+                                            required
+                                            autoComplete="new-password"
+                                            className="h-12 w-full rounded-xl border px-4 text-base text-foreground placeholder:text-muted-foreground transition-all duration-300 ease-out focus:outline-none focus:ring-0 font-outfit"
+                                            style={{
+                                                backgroundColor: '#F8F9F3',
+                                                borderColor: 'rgba(0, 0, 0, 0.08)',
+                                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+                                            }}
+                                            onFocus={(e) => {
+                                                e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.2)';
+                                                e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(0, 0, 0, 0.08), 0 0 0 3px rgba(205, 86, 86, 0.1)';
+                                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                            }}
+                                            onBlur={(e) => {
+                                                e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)';
+                                                e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.03)';
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (document.activeElement !== e.currentTarget) {
+                                                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.12)';
+                                                    e.currentTarget.style.boxShadow = '0 2px 4px 0 rgba(0, 0, 0, 0.05)';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (document.activeElement !== e.currentTarget) {
+                                                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)';
+                                                    e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.03)';
+                                                }
+                                            }}
+                                            aria-label="Password"
+                                            aria-invalid={errors.password ? 'true' : 'false'}
+                                            aria-describedby={
+                                                errors.password
+                                                    ? 'password-error'
+                                                    : undefined
+                                            }
+                                        />
+                                        {errors.password && (
+                                            <p
+                                                id="password-error"
+                                                className="text-sm text-destructive font-outfit"
+                                                role="alert"
+                                            >
+                                                {errors.password}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <button

@@ -11,7 +11,7 @@ export default function StepIndicator({
     totalSteps
 }: StepIndicatorProps) {
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-6">
             {Array.from({ length: totalSteps }, (_, index) => {
                 const stepNumber = index + 1;
                 const isCompleted = stepNumber < currentStep;
@@ -19,33 +19,35 @@ export default function StepIndicator({
 
                 return (
                     <React.Fragment key={stepNumber}>
-                        {/* Step Circle with Number */}
                         <motion.div
-                            className="flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium font-outfit transition-all duration-300"
+                            className="relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300"
                             initial={false}
                             animate={{
                                 backgroundColor: isCompleted || isActive 
                                     ? '#CD5656' 
-                                    : 'rgba(0, 0, 0, 0.1)',
-                                color: isCompleted || isActive 
-                                    ? '#FFFFFF' 
-                                    : 'rgba(0, 0, 0, 0.4)',
-                                scale: isActive ? 1.1 : 1,
+                                    : 'rgba(0, 0, 0, 0.08)',
+                                scale: isActive ? 1.05 : 1,
                             }}
                             transition={{ duration: 0.3 }}
                         >
-                            {stepNumber}
+                            <div
+                                className="absolute rounded-full"
+                                style={{
+                                    width: '40%',
+                                    height: '40%',
+                                    backgroundColor: isCompleted || isActive 
+                                        ? '#E88A8A' 
+                                        : 'rgba(0, 0, 0, 0.15)',
+                                }}
+                            />
                         </motion.div>
 
-                        {/* Connecting Line */}
                         {index < totalSteps - 1 && (
-                            <div className="relative w-12 h-0.5 overflow-hidden">
-                                {/* Background Line */}
+                            <div className="relative w-20 h-0.5 overflow-hidden">
                                 <div 
                                     className="absolute inset-0"
                                     style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
                                 />
-                                {/* Animated Fill Line */}
                                 {isCompleted && (
                                     <motion.div
                                         className="absolute inset-0"
