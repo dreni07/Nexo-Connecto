@@ -7,6 +7,7 @@ use App\Http\Controllers\LandingPage;
 use App\Http\Controllers\CompanyAuthentication;
 use App\Http\Controllers\ThirdPartyAuthentication;
 use App\Http\Controllers\Registration;
+use App\Http\Controllers\CompanyDashboard;
 
 
 Route::get('/', function () {
@@ -19,11 +20,10 @@ Route::controller(LandingPage::class)->middleware('web','guest')->group(function
     Route::get('/','index');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+Route::controller(CompanyDashboard::class)->group(function () {
+    Route::get('company/dashboard','index')->name('company.dashboard');
 });
+
 
 Route::controller(CompanyAuthentication::class)->middleware('web','guest')->group(function () {
     Route::get('/company/onboarding','onboard_page')->name('company.onboarding');  
