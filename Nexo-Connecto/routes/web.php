@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyAuthentication;
 use App\Http\Controllers\ThirdPartyAuthentication;
 use App\Http\Controllers\Registration;
 use App\Http\Controllers\CompanyDashboard;
+use App\Http\Controllers\VerifyController;
 
 
 Route::get('/', function () {
@@ -32,6 +33,13 @@ Route::controller(CompanyAuthentication::class)->middleware('web','guest')->grou
 Route::controller(ThirdPartyAuthentication::class)->middleware('web','guest')->group(function () {
     Route::get('/auth/{provider}', 'redirect')->name('auth.provider');
     Route::get('/auth/{provider}/callback', 'callback')->name('auth.provider.callback');
+});
+
+Route::controller(VerifyController::class)->middleware('web')->group(function () {
+    Route::get('/verify','verify')->name('verify');
+
+    Route::post('/verify/handle-request','handleRequest')->name('verify.handle-request');
+    Route::post('/verify/verify-code','verifyCode')->name('verify.verify-code');
 });
 
 Route::controller(Registration::class)->middleware('web','guest')->group(function () {

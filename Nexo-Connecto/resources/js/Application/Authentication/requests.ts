@@ -2,7 +2,8 @@ import { router } from '@inertiajs/react';
 
 import type { 
     CreateCompanyAccountRequest, 
-    CreateCompanyAccountResponse 
+    CreateCompanyAccountResponse,
+    VerifyCodeRequest
 } from './types';
 
 interface ApiResponse {
@@ -110,3 +111,71 @@ export const createCompanyAccount = async (
     }
 };
 
+export const verifyCode = async (verify_code:VerifyCodeRequest):Promise<ApiResponse> => {
+    try {
+        const csrfToken = getCsrfToken();
+
+        const options:RequestInit = {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'X-Requested-With':'XMLHttpRequest',
+                'Accept':'application/json',
+                'X-CSRF-TOKEN':csrfToken ?? ''
+            },
+            body:JSON.stringify(verify_code)
+        }
+
+        const response = await fetch('/verify/verify-code',options);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to verify code. Please try again.');
+        }
+
+        const result:ApiResponse = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error || result.message || 'Failed to verify code. Please try again.');
+        }
+
+    
+        return result;
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to verify code. Please try again.';
+        throw new Error(errorMessage);
+    }
+}
+
+
+// metoda per me bo request-in me qu emailin per kod
+export const handleRequest = async ():Promise<ApiResponse> => {
+    try {
+        const csrfToken = getCsrfToken();
+
+        const options:RequestInit = {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'X-Requested-With':'XMLHttpRequest',
+                'Accept':'application/json',
+                'X-CSRF-TOKEN':csrfToken ?? ''
+            },
+            body:JSON.stringify({})
+        }
+
+        const response = await fetch('/verify/handle-request',options);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to handle request. Please try again.');
+        }
+
+        const result:ApiResponse = await response.json();
+
+        return result;
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to handle request. Please try again.';
+        throw new Error(errorMessage);
+    }
+}

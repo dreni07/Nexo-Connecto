@@ -17,3 +17,9 @@ export interface ApiErrorResponse {
     errors?: Record<string, string[]>;
 }
 
+export type VerifyCodeRequest =
+{
+    code: string;
+}
+
+
