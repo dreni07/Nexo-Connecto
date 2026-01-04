@@ -39,18 +39,40 @@ const Verify = ({ email }: VerifyProps) => {
     }, []);
 
 
-    const handleResendCode = async (skipCheck = false) => {
-        if (!skipCheck && (isResendDisabled || processing)) return;
+    const handleResendCode = async () => {
+        if (isResendDisabled || processing) return;
 
         setProcessing(true);
         setNotification(null);
         setIsResendDisabled(true);
         setCountdown(60);
 
-        // Simulate processing delay
-        setTimeout(() => {
+        try {
+            const result = await handleRequest();
+
+            if (result.success) {
+                setNotification({
+                    type: 'success',
+                    message: result.message || 'Verification code sent successfully.',
+                });
+            } else {
+                setNotification({
+                    type: 'fail',
+                    message: result.message || 'Failed to send verification code. Please try again.',
+                });
+                // Re-enable button on error
+                setIsResendDisabled(false);
+            }
+        } catch (error) {
+            setNotification({
+                type: 'fail',
+                message: error instanceof Error ? error.message : 'Failed to send verification code. Please try again.',
+            });
+            // Re-enable button on error
+            setIsResendDisabled(false);
+        } finally {
             setProcessing(false);
-        }, 1000);
+        }
     };
 
     useEffect(() => {
@@ -69,6 +91,23 @@ const Verify = ({ email }: VerifyProps) => {
         }
     }, [isResendDisabled]);
 
+    // Auto-verify when all 6 digits are entered
+    useEffect(() => {
+        const fullCode = codes.join('');
+        // Check if all 6 inputs have a value (not empty)
+        const allFilled = codes.every(code => code !== '') && fullCode.length === 6;
+        
+        if (allFilled && !verifying) {
+            // Small delay to ensure state is fully updated
+            const timer = setTimeout(() => {
+                handleVerifyCode(fullCode);
+            }, 150);
+            
+            return () => clearTimeout(timer);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [codes, verifying]);
+
     const handleCodeChange = (index: number, value: string) => {
         if (value.length > 1) return;
         
@@ -82,11 +121,6 @@ const Verify = ({ email }: VerifyProps) => {
         // Auto-advance to next input
         if (value && index < 5) {
             inputRefs.current[index + 1]?.focus();
-        }
-
-        // Auto-submit when all 6 digits are entered
-        if (newCodes.every(code => code !== '') && index === 5) {
-            handleVerifyCode(newCodes.join(''));
         }
     };
 
@@ -117,11 +151,39 @@ const Verify = ({ email }: VerifyProps) => {
         setVerifying(true);
         setNotification(null);
 
+        try {
+            const result = await verifyCode({ code });
 
-        // Simulate verification delay
-        setTimeout(() => {
+            if (result.success) {
+                setNotification({
+                    type: 'success',
+                    message: result.message || 'Email verified successfully!',
+                });
+                
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = '/company/dashboard';
+                }, 1500);
+            } else {
+                setNotification({
+                    type: 'fail',
+                    message: result.message || 'Invalid verification code.',
+                });
+                // Clear codes on error
+                setCodes(['', '', '', '', '', '']);
+                inputRefs.current[0]?.focus();
+            }
+        } catch (error) {
+            setNotification({
+                type: 'fail',
+                message: error instanceof Error ? error.message : 'Failed to verify code. Please try again.',
+            });
+            // Clear codes on error
+            setCodes(['', '', '', '', '', '']);
+            inputRefs.current[0]?.focus();
+        } finally {
             setVerifying(false);
-        }, 1000);
+        }
     };
 
     const containerVariants = {

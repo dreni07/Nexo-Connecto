@@ -22,4 +22,16 @@ export type VerifyCodeRequest =
     code: string;
 }
 
+export interface RegisterRequest {
+    username: string;
+    email: string;
+    password: string;
+    role: number;
+}
+
+export interface LoginRequest {
+    email: string;
+    password: string;
+}
+
 

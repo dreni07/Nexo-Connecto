@@ -9,20 +9,28 @@ use App\Http\Controllers\ThirdPartyAuthentication;
 use App\Http\Controllers\Registration;
 use App\Http\Controllers\CompanyDashboard;
 use App\Http\Controllers\VerifyController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StudentDashboard;
+use App\Http\Controllers\StudentProfile;
 
-
-Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-    ]);
-})->name('home');
-
-Route::controller(LandingPage::class)->middleware('web','guest')->group(function () {
+Route::controller(LandingPage::class)->middleware('web')->group(function () {
     Route::get('/','index');
 });
 
-Route::controller(CompanyDashboard::class)->group(function () {
+Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.company'])->group(function () {
     Route::get('company/dashboard','index')->name('company.dashboard');
+});
+
+
+
+Route::prefix('student')->middleware(['web','auth','role.student'])->group(function() {
+    Route::controller(StudentDashboard::class)->group(function() {
+        Route::get('/dashboard','index')->name('student.dashboard');
+    });
+
+    Route::controller(StudentProfile::class)->group(function() {
+        Route::get('/create-profile','index')->name('student.profile.index');
+    });
 });
 
 
@@ -30,21 +38,38 @@ Route::controller(CompanyAuthentication::class)->middleware('web','guest')->grou
     Route::get('/company/onboarding','onboard_page')->name('company.onboarding');  
 });
 
+Route::controller(AuthController::class)->middleware('web')->group(function(){
+    Route::get('/register','register_page')->name('register.view');
+    Route::post('/register','register')->name('register');
+
+    Route::get('/login','login_page')->name('login.view');
+    Route::post('/login','login')->name('login');
+});
+
 Route::controller(ThirdPartyAuthentication::class)->middleware('web','guest')->group(function () {
     Route::get('/auth/{provider}', 'redirect')->name('auth.provider');
     Route::get('/auth/{provider}/callback', 'callback')->name('auth.provider.callback');
 });
 
-Route::controller(VerifyController::class)->middleware('web')->group(function () {
+
+Route::controller(VerifyController::class)->middleware(['web','auth','email.not.verified'])->group(function () {
     Route::get('/verify','verify')->name('verify');
 
     Route::post('/verify/handle-request','handleRequest')->name('verify.handle-request');
     Route::post('/verify/verify-code','verifyCode')->name('verify.verify-code');
 });
 
-Route::controller(Registration::class)->middleware('web','guest')->group(function () {
-    Route::post('/company/register','create_account')->name('register.create_account');
+Route::prefix('company')->middleware(['web','auth','role.company'])->group(function() {
+    Route::controller(Registration::class)->group(function () {
+        Route::post('/register','create_account')->name('register.create_account');
+    });
+    
+    Route::controller(CompanyAuthentication::class)->group(function () {
+        Route::get('/create-profile','onboard_page')->name('company.profile.create');
+    });
 });
+
+
 
 Route::get('/perqef',function () {
     return response()->json(['message' => 'Hello World']);

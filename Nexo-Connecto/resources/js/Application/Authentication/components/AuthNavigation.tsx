@@ -1,17 +1,13 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
 import { Info } from 'lucide-react';
 import Tooltip from '@/components/Tooltip';
+import NexoLogo from '@/components/NexoLogo';
 
 export default function AuthNavigation() {
     return (
         <>
             <nav className="relative z-20 flex items-center justify-between px-6 py-3 md:px-10 md:py-4 bg-transparent">
-                <Link href="/" className="flex items-center">
-                    <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-red-dark via-red to-coral bg-clip-text text-transparent font-outfit">
-                        Nexo
-                    </span>
-                </Link>
+                <NexoLogo size="md" font="outfit" />
                 
                 <Tooltip 
                     content="Click here for help" 

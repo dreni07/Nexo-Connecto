@@ -29,21 +29,35 @@ const Globe = () => {
                     {/* Inner highlight for 3D effect */}
                     <div className="absolute top-[30%] left-[30%] w-[40%] h-[40%] rounded-full bg-white/35 blur-3xl" />
                     
-                    {/* Grid lines overlay - subtle meridian lines integrated with globe */}
-                    <svg className="absolute inset-0 w-full h-full opacity-[0.2]" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
+                    {/* Grid lines overlay - subtle meridian lines for realistic globe appearance */}
+                    <svg className="absolute inset-0 w-full h-full opacity-[0.4]" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" style={{ mixBlendMode: 'multiply' }}>
                         <defs>
                             <clipPath id="globeClip">
                                 <circle cx="400" cy="400" r="400" />
                             </clipPath>
+                            {/* Gradient for meridian lines to create depth */}
+                            <linearGradient id="meridianGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#8B8D6F" stopOpacity="0.5" />
+                                <stop offset="50%" stopColor="#9FA185" stopOpacity="0.65" />
+                                <stop offset="100%" stopColor="#8B8D6F" stopOpacity="0.5" />
+                            </linearGradient>
+                            {/* Gradient for latitude lines */}
+                            <linearGradient id="latitudeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor="#9FA185" stopOpacity="0.45" />
+                                <stop offset="50%" stopColor="#A8AA8F" stopOpacity="0.6" />
+                                <stop offset="100%" stopColor="#9FA185" stopOpacity="0.45" />
+                            </linearGradient>
                         </defs>
                         <g clipPath="url(#globeClip)">
-                            {/* Longitude lines (vertical) */}
-                            {[...Array(16)].map((_, i) => {
-                                const angle = (i * 22.5) * (Math.PI / 180);
+                            {/* Longitude lines (meridian lines) */}
+                            {[...Array(24)].map((_, i) => {
+                                const angle = (i * 15) * (Math.PI / 180);
                                 const x1 = 400 + 400 * Math.cos(angle);
                                 const y1 = 400 + 400 * Math.sin(angle);
                                 const x2 = 400 - 400 * Math.cos(angle);
                                 const y2 = 400 - 400 * Math.sin(angle);
+                                // Make every 4th line (every 60 degrees) more prominent
+                                const isMajor = i % 4 === 0;
                                 return (
                                     <line
                                         key={`long-${i}`}
@@ -51,16 +65,18 @@ const Globe = () => {
                                         y1={y1}
                                         x2={x2}
                                         y2={y2}
-                                        stroke="#C4C5A8"
-                                        strokeWidth="0.8"
-                                        opacity="0.5"
+                                        stroke={isMajor ? "#7A7C5F" : "url(#meridianGradient)"}
+                                        strokeWidth={isMajor ? "1.4" : "1.0"}
+                                        opacity={isMajor ? "0.7" : "0.55"}
                                     />
                                 );
                             })}
-                            {/* Latitude lines (horizontal circles) */}
+                            {/* Latitude lines (parallels) */}
                             {[-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75].map((lat) => {
                                 const radius = 400 * Math.cos(lat * (Math.PI / 180));
                                 const y = 400 + 400 * Math.sin(lat * (Math.PI / 180));
+                                // Make equator and major parallels more prominent
+                                const isMajor = lat === 0 || Math.abs(lat) === 45 || Math.abs(lat) === 60;
                                 return (
                                     <ellipse
                                         key={`lat-${lat}`}
@@ -69,9 +85,9 @@ const Globe = () => {
                                         rx={Math.abs(radius)}
                                         ry={Math.abs(radius) * 0.5}
                                         fill="none"
-                                        stroke="#9FA185"
-                                        strokeWidth="0.8"
-                                        opacity="1"
+                                        stroke={isMajor ? "#7A7C5F" : "url(#latitudeGradient)"}
+                                        strokeWidth={isMajor ? "1.4" : "1.0"}
+                                        opacity={isMajor ? "0.7" : "0.55"}
                                     />
                                 );
                             })}

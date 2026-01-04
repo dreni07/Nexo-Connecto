@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use App\Models\VerificationCode;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 
 
 class Verification 
@@ -35,25 +36,31 @@ class Verification
     {
         $code = $this->generateCode();
         $this->storeCode($userId, $code);
+        
+     
+        // we are saving the code in cache if the user requests the code again within 15 minutes
+        Cache::put("verification_code_plain_{$userId}", $code, now()->addMinutes(15));
+        
         return $code;
     }
 
-    // handle request method ka mu perdore edhe per here te pare kur vjen kodi por edhe kur ai vendos me re-send kodin
     public function handleRequest(int $userId): array
     {
         try {
             $code = null;
 
-            // if the code has not expired then
             $the_code = $this->getTheCode($userId);
 
             if ($the_code) {
-                $code = $the_code->code;
+                $code = Cache::get("verification_code_plain_{$userId}");
+                
+                if (!$code) {
+                    $code = $this->generateAndStore($userId);
+                }
             } else {
                 $code = $this->generateAndStore($userId);               
             }
           
-            // qoje kodin ne email
             $this->emailService->sendVerificationCode($userId, $code);
             
             return [
@@ -122,6 +129,9 @@ class Verification
         $the_verification_code->update([
             'used_at' => now()
         ]);
+
+        // Clear the cached plain code after successful verification
+        Cache::forget("verification_code_plain_{$userId}");
 
         $this->updateEmailVerification($userId);
         

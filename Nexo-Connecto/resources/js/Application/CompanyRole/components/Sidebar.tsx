@@ -13,6 +13,7 @@ import {
     BookOpen,
     Mail
 } from 'lucide-react';
+import NexoLogo from '@/components/NexoLogo';
 import { useDashboard } from '../context/DashboardContext';
 
 interface NavItem {
@@ -58,16 +59,7 @@ export default function Sidebar() {
             <div className="flex h-full flex-col p-6">
                 {/* Logo */}
                 <div className="mb-8">
-                    <Link href="/" className="flex items-center">
-                        <span 
-                            className="text-2xl font-bold bg-gradient-to-r from-red-dark via-red to-coral bg-clip-text text-transparent"
-                            style={{
-                                backgroundImage: 'linear-gradient(to right, #AF3E3E, #CD5656, #DA6C6C)',
-                            }}
-                        >
-                            Nexo
-                        </span>
-                    </Link>
+                    <NexoLogo size="lg" font="outfit" />
                 </div>
 
                 {/* Navigation */}
