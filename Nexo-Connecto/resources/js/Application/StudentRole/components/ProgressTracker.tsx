@@ -106,7 +106,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ steps = mockSteps }) 
                     <div key={step.id} className="flex items-start gap-3">
                         <div className="mt-0.5">
                             {step.completed ? (
-                                <CheckCircle2 className="w-5 h-5" style={{ color: '#28A745' }} />
+                                <CheckCircle2 className="w-5 h-5" style={{ color: '#CD5656' }} />
                             ) : (
                                 <Circle className="w-5 h-5" style={{ color: 'rgba(0, 0, 0, 0.3)' }} />
                             )}

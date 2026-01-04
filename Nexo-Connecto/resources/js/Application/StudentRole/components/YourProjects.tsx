@@ -27,7 +27,7 @@ const mockProjects: Project[] = [
         description: 'This project involves implementing both frontend and backend functionalities, as well as integrating with third-party APIs.',
         location: 'Germany',
         timeAgo: '2h ago',
-        iconColor: '#FF9800',
+        iconColor: '#CD5656',
     },
     {
         id: '2',
@@ -38,7 +38,7 @@ const mockProjects: Project[] = [
         description: '',
         location: '',
         timeAgo: '',
-        iconColor: '#6C757D',
+        iconColor: '#2A2A2A',
     },
     {
         id: '3',
@@ -49,7 +49,7 @@ const mockProjects: Project[] = [
         description: '',
         location: '',
         timeAgo: '',
-        iconColor: '#4A90E2',
+        iconColor: '#CD5656',
     },
 ];
 
@@ -131,11 +131,11 @@ const YourProjects: React.FC<YourProjectsProps> = ({ projects = mockProjects }) 
                                                     className="px-2 py-1 rounded-md text-xs font-medium"
                                                     style={{
                                                         backgroundColor: project.status === 'Paid' 
-                                                            ? 'rgba(0, 0, 0, 0.1)' 
-                                                            : 'rgba(108, 117, 125, 0.1)',
+                                                            ? 'rgba(205, 86, 86, 0.1)' 
+                                                            : 'rgba(0, 0, 0, 0.1)',
                                                         color: project.status === 'Paid' 
-                                                            ? '#2A2A2A' 
-                                                            : '#6C757D',
+                                                            ? '#CD5656' 
+                                                            : '#2A2A2A',
                                                     }}
                                                 >
                                                     {project.status}

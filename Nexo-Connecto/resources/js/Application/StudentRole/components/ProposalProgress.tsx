@@ -14,9 +14,9 @@ interface ProposalProgressProps {
 }
 
 const defaultMetrics: ProposalMetric[] = [
-    { label: 'Proposals sent', value: 24, icon: Send, color: '#4A90E2' },
+    { label: 'Proposals sent', value: 24, icon: Send, color: '#2A2A2A' },
     { label: 'Interviews', value: 8, icon: Users, color: '#CD5656' },
-    { label: 'Hires', value: 3, icon: Award, color: '#66BB6A' },
+    { label: 'Hires', value: 3, icon: Award, color: '#CD5656' },
 ];
 
 const ProposalProgress: React.FC<ProposalProgressProps> = ({ 

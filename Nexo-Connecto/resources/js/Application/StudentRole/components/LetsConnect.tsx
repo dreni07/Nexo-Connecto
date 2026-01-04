@@ -33,8 +33,8 @@ const mockCompanies: Company[] = [
 
 const levelColors = {
     Senior: { bg: 'rgba(205, 86, 86, 0.1)', text: '#CD5656', border: 'rgba(205, 86, 86, 0.2)' },
-    Middle: { bg: 'rgba(74, 144, 226, 0.1)', text: '#4A90E2', border: 'rgba(74, 144, 226, 0.2)' },
-    Junior: { bg: 'rgba(108, 117, 125, 0.1)', text: '#6C757D', border: 'rgba(108, 117, 125, 0.2)' },
+    Middle: { bg: 'rgba(0, 0, 0, 0.1)', text: '#2A2A2A', border: 'rgba(0, 0, 0, 0.2)' },
+    Junior: { bg: 'rgba(0, 0, 0, 0.05)', text: '#2A2A2A', border: 'rgba(0, 0, 0, 0.15)' },
 };
 
 const LetsConnect: React.FC<LetsConnectProps> = ({ companies = mockCompanies }) => {
