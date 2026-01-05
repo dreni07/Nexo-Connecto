@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Verification;
+use App\Enums\UserRole;
 use Inertia\Inertia;
 
 class VerifyController extends Controller
@@ -61,6 +62,16 @@ class VerifyController extends Controller
 
         $code = (int) $request->code;
         $result = $this->verification->verifyCode($user->id, $code);
+
+        // Add user role to response (middleware will handle profile redirect)
+        if ($result['success']) {
+            $userRole = UserRole::fromId($user->role);
+            
+            $result['user'] = [
+                'id' => $user->id,
+                'role' => $userRole?->value ?? null,
+            ];
+        }
 
         return response()->json($result);
     }

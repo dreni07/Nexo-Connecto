@@ -82,6 +82,14 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             if ($request->user()->email_verified_at) {
+                $userRole = UserRole::fromId($request->user()->role);
+                
+                if ($userRole === UserRole::Student) {
+                    return redirect()->route('student.dashboard');
+                } elseif ($userRole === UserRole::Company) {
+                    return redirect()->route('company.dashboard');
+                }
+                
                 return redirect()->route('company.dashboard');
             } else {
                 return redirect()->route('verify');
@@ -125,6 +133,15 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             if ($request->user()->email_verified_at) {
+                $userRole = UserRole::fromId($request->user()->role);
+                
+                // Redirect to appropriate dashboard (middleware will handle profile check)
+                if ($userRole === UserRole::Student) {
+                    return redirect()->route('student.dashboard');
+                } elseif ($userRole === UserRole::Company) {
+                    return redirect()->route('company.dashboard');
+                }
+                
                 return redirect()->route('company.dashboard');
             } else {
                 return redirect()->route('verify');

@@ -160,9 +160,14 @@ const Verify = ({ email }: VerifyProps) => {
                     message: result.message || 'Email verified successfully!',
                 });
                 
-                // Redirect to dashboard after a short delay
                 setTimeout(() => {
-                    window.location.href = '/company/dashboard';
+                    if (result.user?.role === 'company') {
+                        window.location.href = '/company/dashboard';
+                    } else if (result.user?.role === 'student') {
+                        window.location.href = '/student/dashboard';
+                    } else {
+                        window.location.href = '/company/dashboard';
+                    }
                 }, 1500);
             } else {
                 setNotification({

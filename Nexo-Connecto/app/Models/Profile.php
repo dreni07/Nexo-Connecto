@@ -13,6 +13,10 @@ class Profile extends Model
         'bio'
     ];
 
+    // fakultetin
+    // drejtimi
+
+
     public function user()
     {
         return $this->belongsTo(User::class);

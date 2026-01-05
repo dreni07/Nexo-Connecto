@@ -17,25 +17,25 @@ return new class extends Migration
 
             $table->enum('degree_level',['Bachelor','Master','PhD']);
 
-            $table->float('gpa');
+            $table->float('gpa')->nullable();
 
             $table->integer('academic_year');
 
-            $table->json('technical_skills'); // this will have also foreign-keys 
+            $table->json('technical_skills')->nullable(); // this will have also foreign-keys 
 
-            $table->json('languages');
+            $table->json('languages')->nullable();
 
             $table->enum('work_preference',['remote','on-site','hybrid'])->nullable();
 
-            $table->json('social_media');
+            $table->json('social_media')->nullable();
 
-            $table->json('industries_preferences'); // this will have foreign-keys
+            $table->json('industries_preferences')->nullable(); // this will have foreign-keys
             
             $table->text('career_goals')->nullable();
 
-            $table->json('student_answers');
+            $table->json('student_answers')->nullable();
 
-            $table->integer('profile_completion_percentage');
+            $table->integer('profile_completion_percentage')->nullable();
 
             $table->foreign('university')->references('id')->on('universities');
         });

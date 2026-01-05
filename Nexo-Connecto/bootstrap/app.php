@@ -5,6 +5,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\EnsureEmailNotVerified;
 use App\Http\Middleware\EnsureStudentRole;
 use App\Http\Middleware\EnsureCompanyRole;
+use App\Http\Middleware\EnsureProfileExists;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'email.not.verified' => EnsureEmailNotVerified::class,
             'role.student' => EnsureStudentRole::class,
             'role.company' => EnsureCompanyRole::class,
+            'profile.exists' => EnsureProfileExists::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

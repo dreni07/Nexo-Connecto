@@ -5,11 +5,11 @@ import { FaMicrosoft } from 'react-icons/fa';
 export default function OAuthButtons() {
     
     const handleGoogleOAuth = () => {
-        console.log('Google OAuth clicked');
+        window.location.href = '/auth/google';
     };
 
     const handleMicrosoftOAuth = () => {
-        console.log('Microsoft OAuth clicked');
+        window.location.href = '/auth/microsoft';
     };
 
     return (

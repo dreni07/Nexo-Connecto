@@ -1,0 +1,13 @@
+so first of all what I need to do about the profile
+I need to get the neccessary data like the username,email,role
+and also the university details where the user it's, once i get the university details,
+where the user it's I can immediatly fill-out the subjects the user it's taking and based on the subjects
+the user it's taking then I have a lot of data for the user,
+I can make then the user jump straight into the platform, after the user jumps straight into the platforms
+I will gamify the process of completing the profile, where I will show a percentage of completion
+I will show all the other steps to complete the profile on small modular cards,
+for example I will not show forms but actions, for example Add Internships,
+Add GPA,Add This, Add That etc,etc.
+then I will also make sure that the users for example where they have to write
+their career goals, I will display an input with some friendly message like:"Tell us
+more about your career goals"

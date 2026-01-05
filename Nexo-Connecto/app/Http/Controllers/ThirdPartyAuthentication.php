@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\OAuth\OAuthService;
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
 
 class ThirdPartyAuthentication extends Controller
@@ -41,12 +42,22 @@ class ThirdPartyAuthentication extends Controller
             // Get the intended role from session
             $intendedRole = session('oauth_intended_role');
             
-            $this->oauthService->handleCallback($provider, $intendedRole);
+            $user = $this->oauthService->handleCallback($provider, $intendedRole);
             
             // Clear the session variable after use
             session()->forget('oauth_intended_role');
             
-            return redirect()->intended('/dashboard');
+            $userRole = UserRole::fromId($user->role);
+            
+            // Redirect to appropriate dashboard (middleware will handle profile check)
+            if ($userRole === UserRole::Student) {
+                return redirect()->route('student.dashboard');
+            } elseif ($userRole === UserRole::Company) {
+                return redirect()->route('company.dashboard');
+            }
+            
+            // Fallback
+            return redirect()->route('company.dashboard');
         } catch (\InvalidArgumentException $e) {
             return redirect()->route('company.onboarding')
                 ->with('error', 'Unsupported authentication provider.');

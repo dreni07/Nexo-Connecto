@@ -35,10 +35,11 @@ const fallbackCsrfToken = (): string => {
 
 const getCsrfToken = (): string | null => {
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    console.log(token,"TOKEN FROM HTML")
    
     if (token) return token;
     
-    // try an fallback through cookies if we cannot find the csrf token 
     const cookieToken = fallbackCsrfToken();
     return cookieToken || null;
 };
@@ -118,19 +119,14 @@ export const verifyCode = async (verify_code:VerifyCodeRequest):Promise<ApiRespo
     try {
         const csrfToken = getCsrfToken();
 
-        const headers: HeadersInit = {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-        };
-
-        if (csrfToken) {
-            headers['X-CSRF-TOKEN'] = csrfToken;
-        }
-
         const options: RequestInit = {
             method: 'POST',
-            headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken ?? ''
+            },
             body: JSON.stringify(verify_code),
             credentials: 'same-origin'
         };
@@ -160,21 +156,17 @@ export const handleRequest = async ():Promise<ApiResponse> => {
     try {
         const csrfToken = getCsrfToken();
 
-        console.log(csrfToken,"THE CSRF TOKEN THAT IT'S BEING SENT");
+        console.log(csrfToken,"CSRF TOKEN");
 
-        const headers: HeadersInit = {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-        };
-
-        if (csrfToken) {
-            headers['X-CSRF-TOKEN'] = csrfToken;
-        }
 
         const options: RequestInit = {
             method: 'POST',
-            headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken ?? ''
+            },
             body: JSON.stringify({}),
             credentials: 'same-origin'
         };
@@ -297,3 +289,4 @@ export const login = async (data: LoginRequest): Promise<ApiResponse> => {
         throw new Error(errorMessage);
     }
 };
+

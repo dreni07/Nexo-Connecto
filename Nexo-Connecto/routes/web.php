@@ -17,19 +17,22 @@ Route::controller(LandingPage::class)->middleware('web')->group(function () {
     Route::get('/','index');
 });
 
-Route::controller(CompanyDashboard::class)->middleware(['web'])->group(function () {
+Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.company','profile.exists'])->group(function () {
     Route::get('company/dashboard','index')->name('company.dashboard');
 });
 
 
 
 Route::prefix('student')->middleware(['web','auth','role.student'])->group(function() {
-    Route::controller(StudentDashboard::class)->group(function() {
+    Route::controller(StudentDashboard::class)->middleware('profile.exists')->group(function() {
         Route::get('/dashboard','index')->name('student.dashboard');
     });
 
     Route::controller(StudentProfile::class)->group(function() {
         Route::get('/create-profile','index')->name('student.profile.index');
+        Route::get('/specific-majors','getSpecificMajors')->name('student.profile.majors');
+        Route::get('/course-subjects','getCourseSubjects')->name('student.profile.course-subjects');
+        Route::post('/complete-profile','completeProfile')->name('student.profile.complete');
     });
 });
 
@@ -70,9 +73,5 @@ Route::prefix('company')->middleware(['web','auth','role.company'])->group(funct
 });
 
 
-
-Route::get('/perqef',function () {
-    return response()->json(['message' => 'Hello World']);
-})->middleware('auth')->name('perqef');
 
 require __DIR__.'/settings.php';

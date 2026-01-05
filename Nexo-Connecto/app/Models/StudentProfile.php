@@ -4,13 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Profile;
+use App\Models\SpecificMajor;
 
 class StudentProfile extends Model
 {
     //
+
+    // foto,bio,fakulteti,drejtimi,degree level,viti,
+
+    // Step 1. foto,bio, 
+    // Step 2. fakulteti,drejtimi,degree level,viti // dropdowns
+
     protected $fillable = [
         'user_profile_id',
-        'university', // university ka me kon foreign-key,sepse na duhet ni tabele
+        'specific_major', // university ka me kon foreign-key,sepse na duhet ni tabele
         // per universitet,sepse normalisht na duhen mashum info per unviersitetin se sa vetem emri
         'degree_level',
         'gpa',
@@ -39,5 +46,10 @@ class StudentProfile extends Model
     public function profile()
     {
         return $this->belongsTo(Profile::class);
+    }
+
+    public function specificMajor()
+    {
+        return $this->belongsTo(SpecificMajor::class);
     }
 }

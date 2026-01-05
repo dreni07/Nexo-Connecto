@@ -39,34 +39,19 @@ export default function SignIn() {
 
             if (result.success) {
                 if (result.user?.email_verified_at) {
-                    if (!result.hasProfile) {
-                        if (result.user?.role === 'company') {
-                            router.visit('/company/create-profile', {
-                                method: 'get',
-                            });
-                        } else if (result.user?.role === 'student') {
-                            router.visit('/student/create-profile', {
-                                method: 'get',
-                            });
-                        } else {
-                            router.visit('/company/dashboard', {
-                                method: 'get',
-                            });
-                        }
+                    // Redirect to dashboard (middleware will handle profile check)
+                    if (result.user?.role === 'company') {
+                        router.visit('/company/dashboard', {
+                            method: 'get',
+                        });
+                    } else if (result.user?.role === 'student') {
+                        router.visit('/student/dashboard', {
+                            method: 'get',
+                        });
                     } else {
-                        if (result.user?.role === 'company') {
-                            router.visit('/company/dashboard', {
-                                method: 'get',
-                            });
-                        } else if (result.user?.role === 'student') {
-                            router.visit('/student/dashboard', {
-                                method: 'get',
-                            });
-                        } else {
-                            router.visit('/company/dashboard', {
-                                method: 'get',
-                            });
-                        }
+                        router.visit('/company/dashboard', {
+                            method: 'get',
+                        });
                     }
                 } else {
                     router.visit('/verify', {
