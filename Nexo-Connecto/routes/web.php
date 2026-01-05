@@ -12,10 +12,13 @@ use App\Http\Controllers\VerifyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentDashboard;
 use App\Http\Controllers\StudentProfile;
+use App\Http\Controllers\SearchController;
 
 Route::controller(LandingPage::class)->middleware('web')->group(function () {
     Route::get('/','index');
 });
+
+Route::get('/search', SearchController::class)->middleware(['web', 'auth'])->name('search');
 
 Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.company','profile.exists'])->group(function () {
     Route::get('company/dashboard','index')->name('company.dashboard');

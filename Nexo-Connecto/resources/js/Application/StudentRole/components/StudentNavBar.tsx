@@ -9,7 +9,6 @@ import { StudentDashboardContext } from '../pages/Index';
 
 const StudentNavBar = () => {
     const user = useContext(StudentDashboardContext);
-    console.log(user);
     return (
         <>
             <nav className="w-full h-[100px] flex justify-between items-center">

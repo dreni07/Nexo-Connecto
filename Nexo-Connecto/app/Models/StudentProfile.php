@@ -45,11 +45,11 @@ class StudentProfile extends Model
 
     public function profile()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'user_profile_id');
     }
 
     public function specificMajor()
     {
-        return $this->belongsTo(SpecificMajor::class);
+        return $this->belongsTo(SpecificMajor::class, 'specific_major');
     }
 }

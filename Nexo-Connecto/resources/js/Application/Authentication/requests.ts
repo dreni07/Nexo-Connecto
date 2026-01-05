@@ -22,26 +22,21 @@ interface ApiResponse {
     };
 }
 
-const fallbackCsrfToken = (): string => {
+const getCsrfToken = (): { header: string; token: string } => {
+    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (metaToken) {
+        return { header: 'X-CSRF-TOKEN', token: metaToken };
+    }
+    
     const cookies = document.cookie.split(';');
     for (const cookie of cookies) {
-        const [name,value] = cookie.trim().split('=');
+        const [name, value] = cookie.trim().split('=');
         if (name === 'XSRF-TOKEN') {
-            return decodeURIComponent(value);
+            return { header: 'X-XSRF-TOKEN', token: decodeURIComponent(value) };
         }
     }
-    return '';
-}
-
-const getCsrfToken = (): string | null => {
-    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-    console.log(token,"TOKEN FROM HTML")
-   
-    if (token) return token;
     
-    const cookieToken = fallbackCsrfToken();
-    return cookieToken || null;
+    return { header: 'X-CSRF-TOKEN', token: '' };
 };
 
 export const createCompanyAccount = async (
@@ -54,17 +49,12 @@ export const createCompanyAccount = async (
     }
 ): Promise<void> => {
     try {
-        const csrfToken = getCsrfToken();
+        const { header, token } = getCsrfToken();
         
         const headers: HeadersInit = {
             'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
+            [header]: token
         };
-        
-        if (csrfToken) {
-            headers['X-CSRF-TOKEN'] = csrfToken;
-        }
 
         const response = await fetch('/company/register', {
             method: 'POST',
@@ -117,15 +107,13 @@ export const createCompanyAccount = async (
 
 export const verifyCode = async (verify_code:VerifyCodeRequest):Promise<ApiResponse> => {
     try {
-        const csrfToken = getCsrfToken();
+        const { header, token } = getCsrfToken();
 
         const options: RequestInit = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken ?? ''
+                [header]: token
             },
             body: JSON.stringify(verify_code),
             credentials: 'same-origin'
@@ -154,18 +142,13 @@ export const verifyCode = async (verify_code:VerifyCodeRequest):Promise<ApiRespo
 
 export const handleRequest = async ():Promise<ApiResponse> => {
     try {
-        const csrfToken = getCsrfToken();
-
-        console.log(csrfToken,"CSRF TOKEN");
-
+        const { header, token } = getCsrfToken();
 
         const options: RequestInit = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken ?? ''
+                [header]: token
             },
             body: JSON.stringify({}),
             credentials: 'same-origin'
@@ -189,15 +172,13 @@ export const handleRequest = async ():Promise<ApiResponse> => {
 
 export const register = async (data: RegisterRequest): Promise<ApiResponse> => {
     try {
-        const csrfToken = getCsrfToken();
+        const { header, token } = getCsrfToken();
 
         const options: RequestInit = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken ?? ''
+                [header]: token
             },
             body: JSON.stringify(data),
             credentials: 'same-origin'
@@ -238,21 +219,14 @@ export const register = async (data: RegisterRequest): Promise<ApiResponse> => {
 
 export const login = async (data: LoginRequest): Promise<ApiResponse> => {
     try {
-        const csrfToken = getCsrfToken();
-
-        const headers: HeadersInit = {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-        };
-
-        if (csrfToken) {
-            headers['X-CSRF-TOKEN'] = csrfToken;
-        }
+        const { header, token } = getCsrfToken();
 
         const options: RequestInit = {
             method: 'POST',
-            headers,
+            headers: {
+                'Content-Type': 'application/json',
+                [header]: token
+            },
             body: JSON.stringify(data),
             credentials: 'same-origin'
         };
@@ -289,4 +263,5 @@ export const login = async (data: LoginRequest): Promise<ApiResponse> => {
         throw new Error(errorMessage);
     }
 };
+
 

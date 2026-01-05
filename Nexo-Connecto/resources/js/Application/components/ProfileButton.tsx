@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Settings } from 'lucide-react';
+import { User, Settings, LogOut } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import defaultAvatar from '../assets/default-avatar.jpg';
@@ -96,6 +96,29 @@ export default function ProfileButton({
                         >
                             <Settings className="w-4 h-4" style={{ color: '#CD5656' }} />
                             <span>Settings</span>
+                        </Link>
+                    </DropdownMenu.Item>
+
+                    <DropdownMenu.Separator className="h-px bg-gray-100 my-1" />
+
+                    <DropdownMenu.Item asChild>
+                        <Link
+                            href="/logout"
+                            method="post"
+                            as="button"
+                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer outline-none font-outfit"
+                            style={{
+                                color: '#333',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#F8F9F3';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                        >
+                            <LogOut className="w-4 h-4" style={{ color: '#CD5656' }} />
+                            <span>Logout</span>
                         </Link>
                     </DropdownMenu.Item>
                 </DropdownMenu.Content>
