@@ -17,13 +17,13 @@ Route::controller(LandingPage::class)->middleware('web')->group(function () {
     Route::get('/','index');
 });
 
-Route::controller(CompanyDashboard::class)->middleware(['web'])->group(function () {
+Route::controller(CompanyDashboard::class)->middleware(['web', 'auth', 'role.company'])->group(function () {
     Route::get('company/dashboard','index')->name('company.dashboard');
 });
 
 
 
-Route::prefix('student')->middleware(['web','auth','role.student'])->group(function() {
+Route::prefix('student')->middleware(['web', 'auth', 'role.student'])->group(function() {
     Route::controller(StudentDashboard::class)->group(function() {
         Route::get('/dashboard','index')->name('student.dashboard');
     });
