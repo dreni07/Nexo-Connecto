@@ -53,7 +53,7 @@ export default function SearchBar({
                     onBlur={() => setIsFocused(false)}
                     placeholder="Search..."
                     className="h-10 px-3 py-2 bg-transparent border-0 outline-none text-sm font-outfit placeholder:text-muted-foreground flex-1 min-w-0"
-                    style={{ color: '#333', width: '280px' }}
+                    style={{ color: '#333', minWidth: '120px' }}
                 />
 
                 <div className="flex items-center border-l pr-1" style={{ borderColor: 'rgba(0, 0, 0, 0.08)' }}>
@@ -61,11 +61,10 @@ export default function SearchBar({
                         <DropdownMenu.Trigger asChild>
                             <button
                                 type="button"
-                                className="flex items-center justify-center gap-1.5 px-3 py-2 h-10 text-sm font-outfit transition-colors hover:bg-gray-50 rounded-r-lg cursor-pointer outline-none"
+                                className="flex items-center justify-center gap-1.5 px-2 md:px-3 py-2 h-10 text-xs md:text-sm font-outfit transition-colors hover:bg-gray-50 rounded-r-lg cursor-pointer outline-none"
                                 style={{ 
                                     color: '#333',
-                                    width: '110px',
-                                    minWidth: '110px',
+                                    minWidth: '80px',
                                 }}
                             >
                                 <span className="truncate">{searchType === 'Companies' ? 'Companies' : 'Students'}</span>

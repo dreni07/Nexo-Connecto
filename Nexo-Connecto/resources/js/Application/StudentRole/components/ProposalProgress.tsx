@@ -29,7 +29,7 @@ const ProposalProgress: React.FC<ProposalProgressProps> = ({
 
     return (
         <div 
-            className="rounded-2xl p-6 transition-all duration-300 font-outfit"
+            className="rounded-2xl p-4 sm:p-6 transition-all duration-300 font-outfit"
             style={{
                 border: '1px solid rgba(0, 0, 0, 0.06)',
                 boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
@@ -41,21 +41,21 @@ const ProposalProgress: React.FC<ProposalProgressProps> = ({
                 e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
             }}
         >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
                 <h3 
-                    className="text-lg font-semibold"
+                    className="text-base sm:text-lg font-semibold"
                     style={{ color: '#2A2A2A' }}
                 >
                     Proposal Progress
                 </h3>
                 <button
                     onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                     style={{ color: 'rgba(0, 0, 0, 0.7)' }}
                 >
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-sm font-medium">{date}</span>
-                    <ChevronDown className="w-4 h-4" />
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="text-xs sm:text-sm font-medium">{date}</span>
+                    <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
                 </button>
             </div>
 
