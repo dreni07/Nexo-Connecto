@@ -157,5 +157,69 @@ class StudentProfileService
         // 8.Masi te krijojm domethane student_profile shkojm edhe e krijojm instancen per StudentSubjects table
         // ku e bojm pass student_profile_id qe e kemi kriju edhe e bojm pass subjects_choosen qe e kemi marr prej front-endit
     }
+
+
+    public function getProfileCompletionStatus(int $userId): array
+    {
+        $profile = Profile::where('user_id', $userId)->first();
+        
+        $fieldsToCheck = [
+            'specific_major',
+            'degree_level',
+            'gpa',
+            'academic_year',
+            'technical_skills',
+            'languages',
+            'work_preference',
+            'social_media',
+            'industries_preferences',
+            'career_goals',
+            'student_answers'
+        ];
+
+        if (!$profile) {
+            return [
+                'non_empty_fields' => [],
+                'empty_fields' => $fieldsToCheck
+            ];
+        }
+
+        $studentProfile = StudentProfile::where('user_profile_id', $profile->id)->first();
+        
+        if (!$studentProfile) {
+            return [
+                'non_empty_fields' => [],
+                'empty_fields' => $fieldsToCheck
+            ];
+        }
+
+        $nonEmptyFields = [];
+        $emptyFields = [];
+
+        foreach ($fieldsToCheck as $field) {
+            $value = $studentProfile->$field;
+            $isEmpty = false;
+
+            if (is_null($value)) {
+                $isEmpty = true;
+            } elseif (is_array($value) && empty($value)) {
+                $isEmpty = true;
+            } elseif (is_string($value) && trim($value) === '') {
+                $isEmpty = true;
+            }
+
+            if ($isEmpty) {
+                $emptyFields[] = $field;
+            } else {
+                $nonEmptyFields[] = $field;
+            }
+        }
+
+        return [
+            'non_empty_fields' => $nonEmptyFields,
+            'empty_fields' => $emptyFields
+        ];
+    }
+
 }
 

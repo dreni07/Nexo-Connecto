@@ -79,18 +79,6 @@ export default function SearchBar({
                     <Search className={`w-4 h-4 transition-colors duration-300 ${isFocused ? 'text-[#CD5656]' : 'text-zinc-400'}`} />
                 </div>
                 
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    placeholder="Search..."
-                    className="h-10 px-3 py-2 bg-transparent border-0 outline-none text-sm font-outfit placeholder:text-muted-foreground flex-1 min-w-0"
-                    style={{ color: '#333', minWidth: '120px' }}
-                />
-
-                <div className="flex items-center border-l pr-1" style={{ borderColor: 'rgba(0, 0, 0, 0.08)' }}>
                 <div className="relative flex-1 flex items-center min-w-0">
                     <input
                         type="text"
@@ -100,6 +88,7 @@ export default function SearchBar({
                             setIsFocused(true);
                             if (results.length > 0 || isLoading) setIsOpen(true);
                         }}
+                        onBlur={() => setIsFocused(false)}
                         placeholder="Search for people or companies..."
                         className="h-full w-full px-3 py-2 bg-transparent border-0 outline-none text-sm font-medium placeholder:text-zinc-400"
                         style={{ color: '#18181B' }}
@@ -129,12 +118,10 @@ export default function SearchBar({
                         <DropdownMenu.Trigger asChild>
                             <button
                                 type="button"
-                                className="flex items-center justify-center gap-1.5 px-2 md:px-3 py-2 h-10 text-xs md:text-sm font-outfit transition-colors hover:bg-gray-50 rounded-r-lg cursor-pointer outline-none"
+                                className="flex items-center justify-center gap-2 px-4 py-2 h-11 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-100/50 rounded-r-2xl cursor-pointer outline-none active:scale-95"
                                 style={{ 
-                                    color: '#333',
                                     minWidth: '80px',
                                 }}
-                                className="flex items-center justify-center gap-2 px-4 py-2 h-11 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-100/50 rounded-r-2xl cursor-pointer outline-none active:scale-95"
                             >
                                 <span className="truncate">{searchType}</span>
                                 <ChevronDown className="w-3.5 h-3.5 opacity-60" />
@@ -230,7 +217,7 @@ export default function SearchBar({
                         </div>
                         
                         {results.length > 0 && (
-                            <div className="p-3 bg-zinc-50/50 border-top border-zinc-50 text-center">
+                            <div className="p-3 bg-zinc-50/50 border-t border-zinc-50 text-center">
                                 <button className="text-xs font-bold text-[#CD5656] hover:text-[#B44B4B] transition-colors">
                                     View all results
                                 </button>

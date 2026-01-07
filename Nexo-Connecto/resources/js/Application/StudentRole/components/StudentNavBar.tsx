@@ -43,14 +43,9 @@ const StudentNavBar = () => {
                 <div className="flex items-center gap-2 md:gap-4 pr-4 md:pr-8">
                     {/* Desktop Search Bar - Hidden on mobile/tablet */}
                     <div className="hidden xl:block">
-                        <SearchBar 
-                            onSearch={(query, type) => {
-                                console.log('Search:', query, 'Type:', type);
-                            }}
-                        />
+                        <SearchBar />
+                        
                     </div>
-                <div className="flex items-center gap-4 pr-8">
-                    <SearchBar />
                     
                     {/* Connection, Notification, Profile - Always visible */}
                     <ConnectionButton 
@@ -118,10 +113,6 @@ const StudentNavBar = () => {
                                     {/* Mobile Search Bar */}
                                     <div className="w-full">
                                         <SearchBar 
-                                            onSearch={(query, type) => {
-                                                console.log('Search:', query, 'Type:', type);
-                                                setIsMobileMenuOpen(false);
-                                            }}
                                             className="w-full"
                                         />
                                     </div>
