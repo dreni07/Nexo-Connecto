@@ -49,6 +49,8 @@ const StudentNavBar = () => {
                             }}
                         />
                     </div>
+                <div className="flex items-center gap-4 pr-8">
+                    <SearchBar />
                     
                     {/* Connection, Notification, Profile - Always visible */}
                     <ConnectionButton 

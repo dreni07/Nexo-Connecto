@@ -13,12 +13,19 @@ class Profile extends Model
         'bio'
     ];
 
-    // fakultetin
-    // drejtimi
-
-
+  
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function studentProfile()
+    {
+        return $this->hasOne(StudentProfile::class, 'user_profile_id')->latestOfMany();
+    }
+
+    public function companyProfile()
+    {
+        return $this->hasOne(CompanyProfile::class, 'user_profile_id')->latestOfMany();
     }
 }
