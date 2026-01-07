@@ -25,19 +25,32 @@ class EnsureProfileExists
             return $next($request);
         }
 
-        $hasProfile = Profile::where('user_id', $user->id)->exists();
+        $profile = Profile::where('user_id', $user->id)->latest()->first();
 
-        if (!$hasProfile) {
-            $userRole = UserRole::fromId($user->role);
+        if (!$profile) {
+            return $this->redirectToCreateProfile($user->role);
+        }
 
-            if ($userRole === UserRole::Student) {
-                return redirect()->route('student.profile.index');
-            } elseif ($userRole === UserRole::Company) {
-                return redirect()->route('company.profile.create');
-            }
+        // Check for role-specific profile record
+        $userRole = UserRole::fromId($user->role);
+        if ($userRole === UserRole::Student && !$profile->studentProfile()->exists()) {
+            return $this->redirectToCreateProfile($user->role);
+        } elseif ($userRole === UserRole::Company && !$profile->companyProfile()->exists()) {
+            return $this->redirectToCreateProfile($user->role);
         }
 
         return $next($request);
+    }
+
+    private function redirectToCreateProfile(int $roleId): Response
+    {
+        $userRole = UserRole::fromId($roleId);
+        if ($userRole === UserRole::Student) {
+            return redirect()->route('student.profile.index');
+        } elseif ($userRole === UserRole::Company) {
+            return redirect()->route('company.profile.create');
+        }
+        return redirect('/');
     }
 }
 

@@ -14,6 +14,7 @@ interface CustomSelectProps {
     label?: string;
     searchable?: boolean;
     searchPlaceholder?: string;
+    disabled?: boolean;
 }
 
 export default function CustomSelect({
@@ -24,6 +25,7 @@ export default function CustomSelect({
     label,
     searchable = false,
     searchPlaceholder = 'Search...',
+    disabled = false,
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -109,8 +111,14 @@ export default function CustomSelect({
 
     const displayOptions = searchable ? filteredOptions : options;
 
+    const handleToggle = () => {
+        if (!disabled) {
+            setIsOpen(!isOpen);
+        }
+    };
+
     return (
-        <div className="flex flex-col gap-2">
+        <div className={`flex flex-col gap-2 ${disabled ? 'opacity-60 grayscale-[0.5]' : ''}`}>
             {label && (
                 <label className="text-sm font-medium text-foreground font-outfit">
                     {label}
@@ -120,8 +128,9 @@ export default function CustomSelect({
                 {!selectedOption ? (
                     <button
                         type="button"
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="w-full h-12 px-4 rounded-xl border text-base text-foreground transition-all duration-300 ease-out focus:outline-none focus:ring-0 font-outfit cursor-pointer flex items-center justify-between"
+                        onClick={handleToggle}
+                        disabled={disabled}
+                        className={`w-full h-12 px-4 rounded-xl border text-base text-foreground transition-all duration-300 ease-out focus:outline-none focus:ring-0 font-outfit flex items-center justify-between ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                         style={{
                             backgroundColor: '#F8F9F3',
                             borderColor: 'rgba(0, 0, 0, 0.08)',

@@ -15,12 +15,7 @@ class SearchController extends Controller
         $this->searchService = $searchService;
     }
 
-    /**
-     * Handle the search request.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
+
     public function __invoke(Request $request): JsonResponse
     {
         $query = $request->input('query', '');
@@ -33,4 +28,7 @@ class SearchController extends Controller
         ]);
     }
 }
+
+
+
 

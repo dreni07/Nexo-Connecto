@@ -21,11 +21,7 @@ const StudentNavBar = () => {
                 </div>
 
                 <div className="flex items-center gap-4 pr-8">
-                    <SearchBar 
-                        onSearch={(query, type) => {
-                            console.log('Search:', query, 'Type:', type);
-                        }}
-                    />
+                    <SearchBar />
                     
                     <ConnectionButton 
                         onClick={() => {

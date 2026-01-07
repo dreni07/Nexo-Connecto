@@ -13,6 +13,15 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentDashboard;
 use App\Http\Controllers\StudentProfile;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Profile;
+use App\Http\Controllers\CoinController;
+
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('/coins', [CoinController::class, 'getCoins'])->name('coins.index');
+    Route::get('/user/coins', [CoinController::class, 'getUserCoins'])->name('user.coins');
+    Route::post('/coins/mark-intro-seen', [CoinController::class, 'markIntroAsSeen'])->name('coins.mark-intro-seen');
+});
+
 
 Route::controller(LandingPage::class)->middleware('web')->group(function () {
     Route::get('/','index');
@@ -26,6 +35,7 @@ Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.compa
 
 
 
+
 Route::prefix('student')->middleware(['web','auth','role.student'])->group(function() {
     Route::controller(StudentDashboard::class)->middleware('profile.exists')->group(function() {
         Route::get('/dashboard','index')->name('student.dashboard');
@@ -36,6 +46,15 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
         Route::get('/specific-majors','getSpecificMajors')->name('student.profile.majors');
         Route::get('/course-subjects','getCourseSubjects')->name('student.profile.course-subjects');
         Route::post('/complete-profile','completeProfile')->name('student.profile.complete');
+    });
+
+        
+    Route::controller(Profile::class)->middleware(['web','auth','role.student'])->group(function() {
+        Route::get('/profile','index')->name('student.profile.index');
+        Route::post('/profile/update-avatar', 'updateAvatar')->name('student.profile.update-avatar');
+        Route::get('/profile/industries', 'getIndustries')->name('student.profile.industries');
+        Route::get('/profile/technical-skills', 'getTechnicalSkills')->name('student.profile.technical-skills');
+        Route::post('/profile/update-skills', 'updateSkills')->name('student.profile.update-skills');
     });
 });
 

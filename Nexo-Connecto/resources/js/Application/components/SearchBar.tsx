@@ -68,11 +68,11 @@ export default function SearchBar({
             <div 
                 className="relative flex items-center h-11 rounded-2xl transition-all duration-300 group overflow-hidden"
                 style={{
-                    backgroundColor: isFocused ? '#FFFFFF' : '#F4F4F5',
-                    border: `1px solid ${isFocused ? 'rgba(205, 86, 86, 0.4)' : 'transparent'}`,
+                    backgroundColor: '#FFFFFF',
+                    border: `1px solid ${isFocused ? 'rgba(205, 86, 86, 0.4)' : 'rgba(0, 0, 0, 0.08)'}`,
                     boxShadow: isFocused 
                         ? '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 0 0 4px rgba(205, 86, 86, 0.1)' 
-                        : 'none',
+                        : '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
                 }}
             >
                 <div className="flex items-center pl-4 flex-shrink-0">

@@ -21,11 +21,11 @@ class Profile extends Model
 
     public function studentProfile()
     {
-        return $this->hasOne(StudentProfile::class, 'user_profile_id');
+        return $this->hasOne(StudentProfile::class, 'user_profile_id')->latestOfMany();
     }
 
     public function companyProfile()
     {
-        return $this->hasOne(CompanyProfile::class, 'user_profile_id');
+        return $this->hasOne(CompanyProfile::class, 'user_profile_id')->latestOfMany();
     }
 }

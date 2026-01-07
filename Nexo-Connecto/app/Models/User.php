@@ -19,7 +19,8 @@ class User extends Authenticatable
         'password',
         'role',
         'google_id',
-        'microsoft_id'
+        'microsoft_id',
+        'has_seen_coins_intro'
     ];
 
     protected $hidden = [
@@ -36,11 +37,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'has_seen_coins_intro' => 'boolean',
         ];
     }
 
     public function profile()
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class)->latestOfMany();
+    }
+
+    public function coins()
+    {
+        return $this->hasMany(User_Coin::class);
     }
 }
