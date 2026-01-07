@@ -46,6 +46,18 @@ const Index = ({ user_details }: IndexProps) => {
     }, [showOverlay]);
 
     return (
+        <StudentDashboardContext.Provider value={user_details}>
+            <Head title="Student Dashboard" />
+            <AnimatePresence>
+                {showOverlay && (
+                    <motion.div
+                        key="welcome-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                        className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#F4F5ED]"
+                    >
         <StudentLayout>
             <StudentDashboardContext.Provider value={user_details}>
                 <Head title="Student Dashboard" />
@@ -84,6 +96,28 @@ const Index = ({ user_details }: IndexProps) => {
                     )}
                 </AnimatePresence>
 
+            <div className="min-h-screen bg-[#f5f2ed] w-full overflow-x-hidden">
+                <StudentNavBar />
+                
+                <main className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8 overflow-x-hidden">
+                    <div className="w-full mx-auto">
+                        {/* Main Content Grid - Responsive */}
+                        <div className="grid grid-cols-1 lg:grid-cols-24 gap-4 sm:gap-6 items-stretch w-full">
+                            {/* First Row: Progress Tracker and Your Recent Projects */}
+                            <div className="lg:col-span-13 order-1 w-full">
+                                <ProgressTracker />
+                            </div>
+                            <div className="lg:col-span-11 order-2 w-full">
+                                <YourProjects />
+                            </div>
+
+                            {/* Second Row: Let's Connect, Unlock Features, and Proposal Progress */}
+                            <div className="lg:col-span-13 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch order-3 lg:order-3 w-full">
+                                <LetsConnect />
+                                <UnlockFeatures />
+                            </div>
+                            <div className="lg:col-span-11 order-4 lg:order-4 w-full">
+                                <ProposalProgress />
                 <div className="min-h-screen bg-[#f5f2ed]">
                     <StudentNavBar />
                     

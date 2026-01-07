@@ -52,7 +52,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ steps = mockSteps }) 
 
     return (
         <div 
-            className="rounded-2xl p-6 transition-all duration-300 font-outfit h-full"
+            className="rounded-2xl p-4 sm:p-6 transition-all duration-300 font-outfit h-full"
             style={{
                 backgroundColor: '#FFFFFF',
                 border: '1px solid rgba(0, 0, 0, 0.06)',
@@ -65,10 +65,10 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ steps = mockSteps }) 
                 e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
             }}
         >
-            <div className="flex items-center gap-2 mb-6">
-                <FileText className="w-5 h-5" style={{ color: '#CD5656' }} />
+            <div className="flex items-center gap-2 mb-4 sm:mb-6">
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#CD5656' }} />
                 <h3 
-                    className="text-lg font-semibold"
+                    className="text-base sm:text-lg font-semibold"
                     style={{ color: '#2A2A2A' }}
                 >
                     Progress Tracker

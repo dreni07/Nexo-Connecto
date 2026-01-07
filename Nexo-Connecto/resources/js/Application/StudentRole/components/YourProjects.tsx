@@ -68,7 +68,7 @@ const YourProjects: React.FC<YourProjectsProps> = ({ projects = mockProjects }) 
 
     return (
         <div 
-            className="rounded-2xl p-6 transition-all duration-300 font-outfit h-full"
+            className="rounded-2xl p-4 sm:p-6 transition-all duration-300 font-outfit h-full"
             style={{
                 border: '1px solid rgba(0, 0, 0, 0.06)',
                 boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
@@ -80,18 +80,18 @@ const YourProjects: React.FC<YourProjectsProps> = ({ projects = mockProjects }) 
                 e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
             }}
         >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
-                    <Folder className="w-5 h-5" style={{ color: '#CD5656' }} />
+                    <Folder className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#CD5656' }} />
                     <h3 
-                        className="text-lg font-semibold"
+                        className="text-base sm:text-lg font-semibold"
                         style={{ color: '#2A2A2A' }}
                     >
                         Your Recent Projects
                     </h3>
                 </div>
                 <button 
-                    className="text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+                    className="text-xs sm:text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
                     style={{ color: '#CD5656' }}
                 >
                     See all Project
