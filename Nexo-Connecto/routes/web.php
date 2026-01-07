@@ -51,10 +51,20 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
         
     Route::controller(Profile::class)->middleware(['web','auth','role.student'])->group(function() {
         Route::get('/profile','index')->name('student.profile.index');
+
         Route::post('/profile/update-avatar', 'updateAvatar')->name('student.profile.update-avatar');
         Route::get('/profile/industries', 'getIndustries')->name('student.profile.industries');
         Route::get('/profile/technical-skills', 'getTechnicalSkills')->name('student.profile.technical-skills');
+
         Route::post('/profile/update-skills', 'updateSkills')->name('student.profile.update-skills');
+        Route::post('/profile/update-gpa', 'updateGpa')->name('student.profile.update-gpa');
+        Route::post('/profile/update-languages', 'updateLanguages')->name('student.profile.update-languages');
+        
+        Route::post('/profile/update-work-preference', 'updateWorkPreference')->name('student.profile.update-work-preference');
+        Route::post('/profile/update-social-media', 'updateSocialMedia')->name('student.profile.update-social-media');
+        Route::post('/profile/update-career-goals', 'updateCareerGoals')->name('student.profile.update-career-goals');
+        Route::get('/profile/quiz-questions', 'getQuizQuestions')->name('student.profile.quiz-questions');
+        Route::post('/profile/update-quiz-answers', 'updateQuizAnswers')->name('student.profile.update-quiz-answers');
     });
 });
 

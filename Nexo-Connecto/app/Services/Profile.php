@@ -7,6 +7,7 @@ use App\Models\TechnicalSkill;
 use App\Models\Industry;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
+use App\Models\FAQ;
 
 class Profile
 {
@@ -116,8 +117,109 @@ class Profile
             throw new \Exception('Student profile not found. Please complete your profile first.');
         }
 
+        $industryIds = TechnicalSkill::whereIn('id', $skillIds)
+            ->pluck('industry')
+            ->unique()
+            ->values()
+            ->toArray();
+
         $studentProfile->update([
-            'technical_skills' => $skillIds
+            'technical_skills' => $skillIds,
+            'industries_preferences' => $industryIds
+        ]);
+    }
+
+   
+    public function updateStudentGpa(User $user, float $gpa): void
+    {
+        $user->loadMissing('profile.studentProfile');
+        $studentProfile = $user->profile?->studentProfile;
+
+        if (!$studentProfile) {
+            throw new \Exception('Student profile not found.');
+        }
+
+        $studentProfile->update([
+            'gpa' => $gpa
+        ]);
+    }
+
+    public function updateStudentLanguages(User $user, array $languages): void
+    {
+        $user->loadMissing('profile.studentProfile');
+        $studentProfile = $user->profile?->studentProfile;
+
+        if (!$studentProfile) {
+            throw new \Exception('Student profile not found.');
+        }
+
+        $studentProfile->update([
+            'languages' => $languages
+        ]);
+    }
+
+    
+    public function updateStudentWorkPreference(User $user, string $preference): void
+    {
+        $user->loadMissing('profile.studentProfile');
+        $studentProfile = $user->profile?->studentProfile;
+
+        if (!$studentProfile) {
+            throw new \Exception('Student profile not found.');
+        }
+
+        $studentProfile->update([
+            'work_preference' => $preference
+        ]);
+    }
+
+    
+    public function updateStudentSocialMedia(User $user, array $socialMedia): void
+    {
+        $user->loadMissing('profile.studentProfile');
+        $studentProfile = $user->profile?->studentProfile;
+
+        if (!$studentProfile) {
+            throw new \Exception('Student profile not found.');
+        }
+
+        $studentProfile->update([
+            'social_media' => $socialMedia
+        ]);
+    }
+
+   
+    public function updateStudentCareerGoals(User $user, string $goals): void
+    {
+        $user->loadMissing('profile.studentProfile');
+        $studentProfile = $user->profile?->studentProfile;
+
+        if (!$studentProfile) {
+            throw new \Exception('Student profile not found.');
+        }
+
+        $studentProfile->update([
+            'career_goals' => $goals
+        ]);
+    }
+
+    public function getStudentQuizQuestions(): array
+    {
+        $faq = FAQ::first();
+        return $faq ? $faq->company_questions : [];
+    }
+
+    public function updateStudentQuizAnswers(User $user, array $answers): void
+    {
+        $user->loadMissing('profile.studentProfile');
+        $studentProfile = $user->profile?->studentProfile;
+
+        if (!$studentProfile) {
+            throw new \Exception('Student profile not found.');
+        }
+
+        $studentProfile->update([
+            'student_answers' => $answers
         ]);
     }
 }

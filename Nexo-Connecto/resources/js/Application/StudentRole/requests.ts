@@ -10,17 +10,7 @@ export interface Skill {
     skill_name: string;
 }
 
-const getCsrfToken = (): { header: string; token: string } => {
-    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-    if (metaToken) {
-        return { header: 'X-CSRF-TOKEN', token: metaToken };
-    }
-    return { header: 'X-CSRF-TOKEN', token: '' };
-};
 
-/**
- * Fetch all industries.
- */
 export const fetchIndustries = async (): Promise<Industry[]> => {
     try {
         const response = await fetch('/student/profile/industries', {
@@ -42,9 +32,7 @@ export const fetchIndustries = async (): Promise<Industry[]> => {
     }
 };
 
-/**
- * Fetch technical skills by industry ID.
- */
+
 export const fetchTechnicalSkills = async (industryId: number): Promise<Skill[]> => {
     try {
         const url = `/student/profile/technical-skills?industry_id=${industryId}`;
@@ -72,12 +60,88 @@ export const fetchTechnicalSkills = async (industryId: number): Promise<Skill[]>
     }
 };
 
-/**
- * Update student technical skills.
- */
+
 export const updateStudentSkills = (skillIds: number[], onSuccess: () => void, onError: () => void) => {
     router.post('/student/profile/update-skills', {
         skills: skillIds
+    }, {
+        onSuccess,
+        onError
+    });
+};
+
+
+export const updateStudentGpa = (gpa: number, onSuccess: () => void, onError: () => void) => {
+    router.post('/student/profile/update-gpa', {
+        gpa
+    }, {
+        onSuccess,
+        onError
+    });
+};
+
+
+export const updateStudentLanguages = (languages: { language: string, level: string }[], onSuccess: () => void, onError: () => void) => {
+    router.post('/student/profile/update-languages', {
+        languages
+    }, {
+        onSuccess,
+        onError
+    });
+};
+
+
+export const updateStudentWorkPreference = (preference: string, onSuccess: () => void, onError: () => void) => {
+    router.post('/student/profile/update-work-preference', {
+        work_preference: preference
+    }, {
+        onSuccess,
+        onError
+    });
+};
+
+
+export const updateStudentSocialMedia = (socialMedia: { name: string, link: string }[], onSuccess: () => void, onError: () => void) => {
+    router.post('/student/profile/update-social-media', {
+        social_media: socialMedia
+    }, {
+        onSuccess,
+        onError
+    });
+};
+
+
+export const updateStudentCareerGoals = (goals: string, onSuccess: () => void, onError: () => void) => {
+    router.post('/student/profile/update-career-goals', {
+        career_goals: goals
+    }, {
+        onSuccess,
+        onError
+    });
+};
+
+
+export const fetchQuizQuestions = async (): Promise<string[]> => {
+    try {
+        const response = await fetch('/student/profile/quiz-questions', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        if (!response.ok) throw new Error('Failed to fetch quiz questions');
+        return await response.json();
+    } catch (error) {
+        console.error('Error in fetchQuizQuestions:', error);
+        return [];
+    }
+};
+
+
+export const updateStudentQuizAnswers = (answers: { question: string, answer: string }[], onSuccess: () => void, onError: () => void) => {
+    router.post('/student/profile/update-quiz-answers', {
+        answers
     }, {
         onSuccess,
         onError

@@ -26,6 +26,8 @@ return new class extends Migration
     {
         Schema::table('technical_skills', function (Blueprint $table) {
             //
+            $table->dropForeign(['industry']);
+            $table->dropColumn('industry');
         });
     }
 };

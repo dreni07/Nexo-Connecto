@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle2, Circle, FileText, ArrowRight } from 'lucide-react';
-import { Components } from './ProgressTrackerActions';
+import { ComponentsMap } from './ProgressTrackerActions';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProgressStep {
@@ -34,7 +34,7 @@ const fieldMetadata: Record<string, { title: string; description: string }> = {
 };
 
 const ProgressTracker: React.FC<ProgressTrackerProps> = ({ profile_completion }) => {
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const [activeField, setActiveField] = useState<string | null>(null);
 
     const steps: ProgressStep[] = [
         ...(profile_completion?.non_empty_fields || []).map((field) => ({
@@ -69,9 +69,9 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ profile_completion })
                     <FileText className="w-5 h-5 text-[#CD5656]" />
                     <h3 className="text-lg font-semibold text-[#2A2A2A]">Progress Tracker</h3>
                 </div>
-                {activeIndex !== null && (
+                {activeField !== null && (
                     <button 
-                        onClick={() => setActiveIndex(null)}
+                        onClick={() => setActiveField(null)}
                         className="text-xs font-medium text-gray-500 hover:text-[#CD5656] transition-colors flex items-center gap-1"
                     >
                         Back to list <ArrowRight className="w-3 h-3 rotate-180" />
@@ -99,14 +99,14 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ profile_completion })
 
             <div className="relative overflow-hidden min-h-[320px]">
                 <AnimatePresence mode="wait">
-                    {activeIndex === null ? (
+                    {activeField === null ? (
                         <motion.div
                             key="list"
                             initial={{ x: 0, opacity: 1 }}
                             exit={{ x: -20, opacity: 0 }}
                             className="space-y-4 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar"
                         >
-                            {steps.map((step, index) => (
+                            {steps.map((step) => (
                                 <div key={step.id} className="flex items-start gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors group">
                                     <div className="mt-1">
                                         {step.completed ? (
@@ -123,7 +123,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ profile_completion })
                                     </div>
                                     {!step.completed && (
                                         <button 
-                                            onClick={() => setActiveIndex(index)}
+                                            onClick={() => setActiveField(step.id)}
                                             className="opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1 bg-[#CD5656] text-white text-[10px] font-bold rounded-lg uppercase tracking-wider"
                                         >
                                             Complete
@@ -141,7 +141,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ profile_completion })
                             className="h-full flex items-center justify-center"
                         >
                             <div className="w-full">
-                                {Components[activeIndex]}
+                                {ComponentsMap[activeField]}
                             </div>
                         </motion.div>
                     )}

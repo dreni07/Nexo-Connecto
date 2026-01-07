@@ -208,6 +208,10 @@ class StudentProfileService
                 $isEmpty = true;
             }
 
+            if ($field === 'industries_preferences' && $isEmpty && !empty($studentProfile->technical_skills)) {
+                $isEmpty = false;
+            }
+
             if ($isEmpty) {
                 $emptyFields[] = $field;
             } else {
