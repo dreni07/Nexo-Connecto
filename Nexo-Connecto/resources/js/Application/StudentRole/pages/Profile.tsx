@@ -3,6 +3,7 @@ import MiniNavbar from '../components/MiniNavbar';
 import ProfileHeader from '../components/ProfileHeader';
 import UserSkills from '../components/UserSkills';
 import PeopleAssociated from '../components/PeopleAssociated';
+import InternshipReadiness from '../components/InternshipReadiness';
 import { Head, usePage } from '@inertiajs/react';
 import { toast } from 'react-toastify';
 import StudentLayout from '@/layouts/student-layout';
@@ -42,9 +43,9 @@ const Profile = ({ profile_user, is_own_profile }: ProfileProps) => {
                 <Head title={`${profile_user.name}'s Profile`} />
                 <MiniNavbar />
                 
-                <main className="w-full px-2 py-10">
-                    <div className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div className="lg:col-span-8 space-y-6">
+                <main className="w-full px-3 sm:px-4 md:px-6 lg:px-2 py-6 sm:py-8 lg:py-10">
+                    <div className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
+                        <div className="lg:col-span-8 space-y-4 sm:space-y-6">
                             <ProfileHeader 
                                 profile_user={profile_user} 
                                 is_own_profile={is_own_profile} 
@@ -57,8 +58,14 @@ const Profile = ({ profile_user, is_own_profile }: ProfileProps) => {
                             />
                         </div>
 
-                        <div className="lg:col-span-4">
+                        <div className="lg:col-span-4 space-y-4 sm:space-y-6">
                             <PeopleAssociated />
+                            <InternshipReadiness 
+                                skills={profile_user.skills} 
+                                industry={profile_user.industry}
+                                university={profile_user.university}
+                                avatar={profile_user.avatar}
+                            />
                         </div>
                     </div>
                 </main>

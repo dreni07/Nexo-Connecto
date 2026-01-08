@@ -14,7 +14,7 @@ const Items = () => {
     ];
 
     return (
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-12">
+        <div className="flex flex-row gap-3 sm:gap-4 lg:gap-12 overflow-x-auto scrollbar-hide">
             {links.map((link) => {
                 const isActive = url === link.href || url.startsWith(link.href + '/');
                 const isHovered = hoveredLink === link.href;
@@ -23,18 +23,18 @@ const Items = () => {
                     <Link
                         key={link.href}
                         href={link.href}
-                        className="inline-block font-outfit cursor-pointer transition-opacity duration-200 py-2 lg:py-0"
+                        className="inline-block font-outfit cursor-pointer transition-opacity duration-200 py-2 lg:py-0 whitespace-nowrap text-sm sm:text-base"
                         style={{
                             opacity: isActive || isHovered ? 1 : 0.7,
                         }}
                         onMouseEnter={() => setHoveredLink(link.href)}
                         onMouseLeave={() => setHoveredLink(null)}
                     >
-                        <span className="text-base lg:text-inherit relative inline-block">
+                        <span className="relative inline-block">
                             {link.label}
                             {isActive && (
                                 <span
-                                    className="absolute bottom-0 left-0 right-0 h-0.5 lg:h-0.5"
+                                    className="absolute bottom-0 left-0 right-0 h-0.5"
                                     style={{ backgroundColor: '#CD5656' }}
                                 />
                             )}
