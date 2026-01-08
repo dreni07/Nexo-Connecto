@@ -27,6 +27,11 @@ Route::controller(LandingPage::class)->middleware('web')->group(function () {
     Route::get('/','index');
 });
 
+// Public route for problem solving (no auth required)
+Route::controller(StudentDashboard::class)->middleware('web')->group(function() {
+    Route::get('/problem-solving', 'problemSolvingPublic')->name('problem-solving.public');
+});
+
 Route::get('/search', SearchController::class)->middleware(['web', 'auth'])->name('search');
 
 Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.company','profile.exists'])->group(function () {
@@ -36,9 +41,10 @@ Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.compa
 
 
 
-Route::prefix('student')->middleware(['web','auth','role.student'])->group(function() {
+Route::prefix('student')->middleware(['web'])->group(function() {
     Route::controller(StudentDashboard::class)->middleware('profile.exists')->group(function() {
         Route::get('/dashboard','index')->name('student.dashboard');
+        Route::get('/problem-solving','problemSolving')->name('student.problem-solving');
     });
 
     Route::controller(StudentProfile::class)->group(function() {
