@@ -15,6 +15,8 @@ use App\Http\Controllers\StudentProfile;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Profile;
 use App\Http\Controllers\CoinController;
+use App\Http\Controllers\ApplicationPages;
+
 
 Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/coins', [CoinController::class, 'getCoins'])->name('coins.index');
@@ -66,6 +68,11 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
         Route::get('/profile/quiz-questions', 'getQuizQuestions')->name('student.profile.quiz-questions');
         Route::post('/profile/update-quiz-answers', 'updateQuizAnswers')->name('student.profile.update-quiz-answers');
     });
+
+    Route::controller(ApplicationPages::class)->group(function () {
+        Route::get('/settings','settings')->name('settings');
+    });
+    
 });
 
 
@@ -103,6 +110,7 @@ Route::prefix('company')->middleware(['web','auth','role.company'])->group(funct
         Route::get('/create-profile','onboard_page')->name('company.profile.create');
     });
 });
+
 
 
 
