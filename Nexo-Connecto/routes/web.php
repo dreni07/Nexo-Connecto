@@ -16,6 +16,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Profile;
 use App\Http\Controllers\CoinController;
 use App\Http\Controllers\ApplicationPages;
+use App\Http\Controllers\ProjectManagement;
 
 
 Route::middleware(['web', 'auth'])->group(function () {
@@ -37,7 +38,6 @@ Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.compa
 
 
 
-
 Route::prefix('student')->middleware(['web','auth','role.student'])->group(function() {
     Route::controller(StudentDashboard::class)->middleware('profile.exists')->group(function() {
         Route::get('/dashboard','index')->name('student.dashboard');
@@ -50,6 +50,15 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
         Route::post('/complete-profile','completeProfile')->name('student.profile.complete');
     });
 
+    Route::controller(\App\Http\Controllers\ProjectManagement::class)->group(function() {
+        Route::get('/post-project', 'index')->name('student.project.create');
+        Route::post('/fetch-github-stack', 'fetchGithubStack')->name('student.project.fetch-github-stack');
+    });
+
+    Route::controller(ProjectManagement::class)->middleware(['web','auth','role.student'])->group(function (){
+        Route::get('/create-project','index')->name('project.management');
+    });
+    
         
     Route::controller(Profile::class)->middleware(['web','auth','role.student'])->group(function() {
         Route::get('/profile','index')->name('student.profile.index');
