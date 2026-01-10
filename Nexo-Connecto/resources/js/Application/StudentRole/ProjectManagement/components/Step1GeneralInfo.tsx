@@ -23,7 +23,7 @@ const Step1GeneralInfo: React.FC<Step1Props> = ({ data, onDataChange, onNext }) 
     const statusOptions = [
         { value: 'concept', label: 'Concept' },
         { value: 'prototype', label: 'Prototype' },
-        { value: 'In Progress', label: 'In Progress' },
+        { value: 'in_progress', label: 'In Progress' },
         { value: 'beta', label: 'Beta' },
         { value: 'completed', label: 'Completed' },
     ];
@@ -59,15 +59,14 @@ const Step1GeneralInfo: React.FC<Step1Props> = ({ data, onDataChange, onNext }) 
                 <div className="flex justify-between items-center ml-1">
                     <label className="text-sm font-bold text-gray-700">Short Summary</label>
                     <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">
-                        {data.summary.length} / 100 characters
+                        {data.summary.length} characters
                     </span>
                 </div>
                 <textarea
                     value={data.summary}
                     onChange={(e) => onDataChange('summary', e.target.value)}
-                    maxLength={100}
                     placeholder="Translate your vision into words that captivate the world's attention..."
-                    className="w-full px-5 py-4 bg-white border-2 border-gray-100 rounded-2xl outline-none focus:border-[#CD5656] min-h-[100px] transition-all text-gray-700 resize-none leading-relaxed placeholder:italic placeholder:text-gray-300"
+                    className="w-full px-5 py-4 bg-white border-2 border-gray-100 rounded-2xl outline-none focus:border-[#CD5656] min-h-[120px] transition-all text-gray-700 resize-none leading-relaxed placeholder:italic placeholder:text-gray-300"
                 />
             </div>
 

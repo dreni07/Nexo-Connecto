@@ -3,14 +3,11 @@ import { Head, Link } from '@inertiajs/react';
 import { 
     ChevronRight,
     Search,
-    Trash2,
-    AlertTriangle
+    Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { router } from '@inertiajs/react';
 import MiniNavbar from './StudentRole/components/MiniNavbar';
 import { groupData } from './config/settingsConfig';
-import CustomModal from '@/components/Modal';
 
 interface SidebarItemProps {
     id: string;
@@ -67,8 +64,6 @@ const Settings = () => {
     const [activeTab, setActiveTab] = useState('career');
     const [searchQuery, setSearchQuery] = useState('');
     const [emphasizedId, setEmphasizedId] = useState<string | null>(null);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
 
     const allItems = groupData.flatMap(group => 
         group.items.map(item => ({ ...item, groupId: group.id }))
@@ -93,22 +88,6 @@ const Settings = () => {
         } else {
             setEmphasizedId(null);
         }
-    };
-
-    const handleDeleteAccount = () => {
-        setIsDeleting(true);
-        router.delete('/settings/profile', {
-            onSuccess: () => {
-                setIsDeleting(false);
-                setIsDeleteModalOpen(false);
-            },
-            onError: () => {
-                setIsDeleting(false);
-            },
-            onFinish: () => {
-                setIsDeleting(false);
-            }
-        });
     };
 
     const renderContent = () => {
@@ -145,7 +124,7 @@ const Settings = () => {
                         <h5 className="text-sm font-bold text-red-900 mb-4 uppercase tracking-widest">Permanent Actions</h5>
                         <button 
                             className="px-6 py-3 bg-[#CD5656]/5 text-[#CD5656] hover:bg-[#CD5656] hover:text-white font-bold rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2 border border-[#CD5656]/20"
-                            onClick={() => setIsDeleteModalOpen(true)} 
+                            onClick={() => {}} 
                         >
                             <Trash2 className="w-4 h-4" />
                             Delete This Account
@@ -210,47 +189,6 @@ const Settings = () => {
                     </div>
                 </div>
             </main>
-
-            <CustomModal 
-                isOpen={isDeleteModalOpen} 
-                onClose={() => setIsDeleteModalOpen(false)}
-                maxWidth="500px"
-            >
-                <div className="p-6">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                            <AlertTriangle className="w-6 h-6 text-red-600" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-gray-900 font-outfit">Confirm Account Deletion</h3>
-                            <p className="text-sm text-gray-500 font-outfit">This action is permanent and cannot be undone.</p>
-                        </div>
-                    </div>
-
-                    <div className="bg-red-50 border border-red-100 rounded-2xl p-4 mb-8">
-                        <p className="text-red-800 font-medium font-outfit text-center">
-                            Are You Sure To Perform This Action?
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 justify-end">
-                        <button
-                            onClick={() => setIsDeleteModalOpen(false)}
-                            className="px-6 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-all active:scale-95"
-                            disabled={isDeleting}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleDeleteAccount}
-                            className="px-8 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-200 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? 'Deleting...' : 'Confirm'}
-                        </button>
-                    </div>
-                </div>
-            </CustomModal>
         </div>
     );
 };

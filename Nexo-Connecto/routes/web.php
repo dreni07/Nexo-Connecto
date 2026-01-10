@@ -50,13 +50,11 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
         Route::post('/complete-profile','completeProfile')->name('student.profile.complete');
     });
 
-    Route::controller(\App\Http\Controllers\ProjectManagement::class)->group(function() {
-        Route::get('/post-project', 'index')->name('student.project.create');
+    Route::controller(ProjectManagement::class)->group(function() {
+        Route::get('/create-project', 'index')->name('student.project.create');
+        Route::get('/project/{id}', 'show')->name('student.project.show');
         Route::post('/fetch-github-stack', 'fetchGithubStack')->name('student.project.fetch-github-stack');
-    });
-
-    Route::controller(ProjectManagement::class)->middleware(['web','auth','role.student'])->group(function (){
-        Route::get('/create-project','index')->name('project.management');
+        Route::post('/create-project', 'createProject')->name('student.project.store');
     });
     
         

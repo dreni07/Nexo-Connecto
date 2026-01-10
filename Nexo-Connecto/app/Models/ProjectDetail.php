@@ -20,6 +20,7 @@ class ProjectDetail extends Model
     ];
 
     protected $casts = [
+        'project_tags' => 'array',
         'project_answers' => 'array',
         'project_tech_stack' => 'array',
         'project_learning_answers' => 'array'

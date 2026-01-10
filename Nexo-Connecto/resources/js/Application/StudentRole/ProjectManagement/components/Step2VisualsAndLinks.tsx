@@ -78,31 +78,21 @@ const Step2VisualsAndLinks: React.FC<Step2Props> = ({ data, onDataChange, onNext
         onDataChange('images', newImages);
     };
 
-    // Debounce GitHub fetching
-    useEffect(() => {
-        const url = data.githubUrl;
-        if (!url || !url.includes('github.com')) {
-            setUsingGithubStack(false);
-            return;
-        }
-
-        const timer = setTimeout(async () => {
+    const handleGithubUrlChange = async (url: string) => {
+        onDataChange('githubUrl', url);
+        if (url.includes('github.com')) {
             setIsFetchingStack(true);
             const stack = await fetchGithubTechStack(url);
-            if (stack && stack.length > 0) {
+            if (stack.length > 0) {
                 onDataChange('techStack', stack);
                 setUsingGithubStack(true);
             } else {
                 setUsingGithubStack(false);
             }
             setIsFetchingStack(false);
-        }, 800); // Wait for 800ms of no typing before fetching
-
-        return () => clearTimeout(timer);
-    }, [data.githubUrl]);
-
-    const handleGithubUrlChange = (url: string) => {
-        onDataChange('githubUrl', url);
+        } else {
+            setUsingGithubStack(false);
+        }
     };
 
     return (

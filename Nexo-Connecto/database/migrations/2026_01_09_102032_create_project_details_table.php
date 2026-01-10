@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('project_summary');
             $table->json('project_tags');
             $table->enum('project_difficulty',['easy','medium','hard']);
-            $table->enum('project_status',['completed','beta','prototype','In Progress','concept']);
+            $table->enum('project_status',['completed','beta','prototype','in_progress','concept']);
 
             $table->json('project_answers');
 

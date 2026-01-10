@@ -1,47 +1,48 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { HelpCircle, Target, ShieldAlert } from 'lucide-react';
+import { Sparkles, BookOpen, Rocket, Loader2 } from 'lucide-react';
 
-interface Step3Props {
+interface Step4Props {
     data: {
-        fixedQuestions: Record<string, string>;
+        learningQuestions: Record<string, string>;
     };
     onDataChange: (field: string, value: any) => void;
     onNext: () => void;
     onBack: () => void;
+    loading?: boolean;
 }
 
-const Step3Insights: React.FC<Step3Props> = ({ data, onDataChange, onNext, onBack }) => {
+const Step4Growth: React.FC<Step4Props> = ({ data, onDataChange, onNext, onBack, loading }) => {
     
     const questions = [
         {
-            id: 'problem_solving',
-            label: 'What Problems Were You Solving?',
-            icon: Target,
-            placeholder: 'Every masterpiece starts with a challenge. What was yours? Describe the specific problems, pain points, or needs that inspired you to build this...'
+            id: 'new_skills',
+            label: 'New Skills Gained/Learned',
+            icon: Sparkles,
+            placeholder: 'What new tools, libraries, or methodologies did you pick up? Maybe you mastered a new CSS framework, or finally understood how to use WebSockets...'
         },
         {
-            id: 'project_impact',
-            label: 'Why Does This Project Matter?',
-            icon: HelpCircle,
-            placeholder: 'Beyond the code, what is the value? Who does it help? Why is this unique or important in your eyes?'
+            id: 'concepts_reinforced',
+            label: 'Concepts Reinforced',
+            icon: BookOpen,
+            placeholder: 'Building is the best way to learn. What existing knowledge did this project solidify? (e.g., State management, API design, Database normalization...)'
         },
         {
-            id: 'constraints',
-            label: 'Constraints',
-            icon: ShieldAlert,
-            placeholder: 'Real-world projects aren\'t built in a vacuum. Talk about the limitations you faced - time, technical hurdles, resource gaps, or any tough trade-offs you had to make...'
+            id: 'next_steps',
+            label: 'Next Steps & Growth',
+            icon: Rocket,
+            placeholder: 'A project is never truly finished. How do you plan to evolve this? New features? Scaling? Refactoring? Tell us your vision for its future...'
         }
     ];
 
     const handleQuestionChange = (id: string, value: string) => {
-        onDataChange('fixedQuestions', {
-            ...data.fixedQuestions,
+        onDataChange('learningQuestions', {
+            ...data.learningQuestions,
             [id]: value
         });
     };
 
-    const isStepValid = questions.every(q => data.fixedQuestions[q.id]?.trim().length > 10);
+    const isStepValid = questions.every(q => data.learningQuestions[q.id]?.trim().length > 10);
 
     return (
         <motion.div
@@ -62,20 +63,19 @@ const Step3Insights: React.FC<Step3Props> = ({ data, onDataChange, onNext, onBac
                         
                         <div className="relative group">
                             <textarea
-                                value={data.fixedQuestions[q.id] || ''}
+                                value={data.learningQuestions[q.id] || ''}
                                 onChange={(e) => handleQuestionChange(q.id, e.target.value)}
                                 placeholder={q.placeholder}
                                 className="w-full min-h-[180px] p-6 bg-white border-2 border-gray-100 rounded-[24px] outline-none focus:border-[#CD5656] focus:bg-white transition-all text-gray-700 leading-relaxed placeholder:italic placeholder:text-gray-300 shadow-sm"
                             />
                             <div className="absolute bottom-4 right-6 text-[10px] font-bold text-gray-300 uppercase tracking-widest pointer-events-none">
-                                {(data.fixedQuestions[q.id] || '').length} chars
+                                {(data.learningQuestions[q.id] || '').length} chars
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Navigation */}
             <div className="pt-8 flex justify-between items-center">
                 <button
                     onClick={onBack}
@@ -85,14 +85,22 @@ const Step3Insights: React.FC<Step3Props> = ({ data, onDataChange, onNext, onBac
                 </button>
                 <button
                     onClick={onNext}
-                    disabled={!isStepValid}
-                    className="px-12 py-4 bg-[#CD5656] text-white font-bold rounded-2xl hover:bg-[#B44B4B] disabled:bg-gray-200 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#CD5656]/20 active:scale-95"
+                    disabled={!isStepValid || loading}
+                    className="px-12 py-4 bg-[#CD5656] text-white font-bold rounded-2xl hover:bg-[#B44B4B] disabled:bg-gray-200 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#CD5656]/20 active:scale-95 flex items-center gap-2"
                 >
-                    Continue to Learning
+                    {loading ? (
+                        <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Creating Project...</span>
+                        </>
+                    ) : (
+                        'Complete Project'
+                    )}
                 </button>
             </div>
         </motion.div>
     );
 };
 
-export default Step3Insights;
+export default Step4Growth;
+

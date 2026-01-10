@@ -5,13 +5,43 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
+use App\Services\ProjectManagementService;
+use App\Models\Project;
 
 class ProjectManagement extends Controller
 {
-    //
+    protected $projectService;
+
+    public function __construct(ProjectManagementService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
+
     public function index()
     {
         return Inertia::render('StudentRole/ProjectManagement/pages/CreateProject');
+    }
+
+    public function show($id)
+    {
+        $project = Project::with(['projectDetail', 'projectVisual', 'user'])->findOrFail($id);
+
+        return Inertia::render('StudentRole/ProjectManagement/pages/ProjectPreview', [
+            'project' => $project
+        ]);
+    }
+
+    public function createProject(Request $request)
+    {
+        $data = $request->all();
+        
+        if ($request->hasFile('images')) {
+            $data['images'] = $request->file('images');
+        }
+
+        $this->projectService->createProject($data);
+
+        return redirect()->route('student.dashboard')->with('success', 'Project created successfully!');
     }
 
     public function fetchGithubStack(Request $request)

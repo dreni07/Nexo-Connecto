@@ -6,15 +6,9 @@ interface TagInputProps {
     tags: string[];
     onTagsChange: (tags: string[]) => void;
     placeholder?: string;
-    emptyText?: string;
 }
 
-const TagInput: React.FC<TagInputProps> = ({ 
-    tags, 
-    onTagsChange, 
-    placeholder = "Add a tag...", 
-    emptyText = "No tags added yet. Tags help people find your project." 
-}) => {
+const TagInput: React.FC<TagInputProps> = ({ tags, onTagsChange, placeholder = "Add a tag..." }) => {
     const [inputValue, setInputValue] = useState('');
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -67,7 +61,7 @@ const TagInput: React.FC<TagInputProps> = ({
                             animate={{ opacity: 1 }}
                             className="text-xs text-gray-400 italic py-2"
                         >
-                            {emptyText}
+                            No tags added yet. Tags help people find your project.
                         </motion.p>
                     ) : (
                         tags.map((tag) => (

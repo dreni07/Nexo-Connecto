@@ -12,4 +12,8 @@ class ProjectVisual extends Model
         'live_demo',
         'github_link'
     ];
+
+    protected $casts = [
+        'images' => 'array'
+    ];
 }

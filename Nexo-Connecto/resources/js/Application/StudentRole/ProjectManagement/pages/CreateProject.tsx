@@ -6,42 +6,51 @@ import ProjectProgressBar from '../components/ProjectProgressBar';
 import Step1GeneralInfo from '../components/Step1GeneralInfo';
 import Step2VisualsAndLinks from '../components/Step2VisualsAndLinks';
 import Step3Insights from '../components/Step3Insights';
+import Step4Growth from '../components/Step4Growth';
+import { createProject } from '../requests';
 
 const CreateProject = () => {
     const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 4; // We'll adjust this as we add more steps
+    const [isLoading, setIsLoading] = useState(false);
+    const steps = [
+        Step1GeneralInfo,
+        Step2VisualsAndLinks,
+        Step3Insights,
+        Step4Growth
+    ];
+    const totalSteps = steps.length;
 
     const [projectData, setProjectData] = useState({
         title: '',
         summary: '',
         tags: [] as string[],
         difficulty: 'medium',
-        status: 'In Progress',
+        status: 'in_progress',
         images: [] as File[],
         liveDemoUrl: '',
         githubUrl: '',
         techStack: [] as { name: string; percentage?: number }[],
         fixedQuestions: {} as Record<string, string>,
-        lessonsLearned: ''
+        learningQuestions: {} as Record<string, string>
     });
 
     const calculateProgress = () => {
-        let completedFields = 0;
-        const totalFields = 11;
+        const checks = [
+            projectData.title.trim().length > 0,
+            projectData.summary.trim().length > 0,
+            projectData.tags.length > 0,
+            !!projectData.difficulty,
+            !!projectData.status,
+            projectData.images.length > 0,
+            projectData.liveDemoUrl.trim().length > 0,
+            projectData.githubUrl.trim().length > 0,
+            projectData.techStack.length > 0,
+            Object.keys(projectData.fixedQuestions).length > 0,
+            Object.keys(projectData.learningQuestions).length > 0,
+        ];
 
-        if (projectData.title.trim()) completedFields++;
-        if (projectData.summary.trim()) completedFields++;
-        if (projectData.tags.length > 0) completedFields++;
-        if (projectData.difficulty) completedFields++;
-        if (projectData.status) completedFields++;
-        if (projectData.images.length > 0) completedFields++;
-        if (projectData.liveDemoUrl.trim()) completedFields++;
-        if (projectData.githubUrl.trim()) completedFields++;
-        if (projectData.techStack.length > 0) completedFields++;
-        if (Object.keys(projectData.fixedQuestions).length > 0) completedFields++;
-        if (projectData.lessonsLearned.trim()) completedFields++;
-
-        return (completedFields / totalFields) * 100;
+        const completedFields = checks.filter(Boolean).length;
+        return (completedFields / checks.length) * 100;
     };
 
     const handleDataChange = (field: string, value: any) => {
@@ -51,8 +60,30 @@ const CreateProject = () => {
         }));
     };
 
-    const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+    const nextStep = () => {
+        if (currentStep === totalSteps) {
+            setIsLoading(true);
+            createProject(
+                projectData,
+                () => {
+                    // Success logic - redirect handled by backend
+                    setIsLoading(false);
+                    console.log('Project created successfully!');
+                },
+                () => {
+                    // Error logic
+                    setIsLoading(false);
+                    console.error('Failed to create project.');
+                }
+            );
+            return;
+        }
+        setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+    };
+
     const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
+
+    const CurrentStepComponent = steps[currentStep - 1];
 
     return (
         <div className="min-h-screen bg-[#FAFAF9] font-outfit">
@@ -65,51 +96,17 @@ const CreateProject = () => {
 
                 <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-gray-100/50">
                     <AnimatePresence mode="wait">
-                        {currentStep === 1 && (
-                            <Step1GeneralInfo 
-                                key="general-info"
-                                data={projectData}
-                                onDataChange={handleDataChange}
-                                onNext={nextStep}
-                            />
-                        )}
-
-                        {currentStep === 2 && (
-                            <Step2VisualsAndLinks 
-                                key="visuals-links"
-                                data={projectData}
-                                onDataChange={handleDataChange}
-                                onNext={nextStep}
-                                onBack={prevStep}
-                            />
-                        )}
-
-                        {currentStep === 3 && (
-                            <Step3Insights 
-                                key="insights"
-                                data={projectData}
-                                onDataChange={handleDataChange}
-                                onNext={nextStep}
-                                onBack={prevStep}
-                            />
-                        )}
-                        
-                        {/* Placeholder for future sections */}
-                        {currentStep > 3 && (
-                            <div className="py-20 text-center">
-                                <p className="text-gray-400 italic">Coming soon: Section {currentStep}</p>
-                                <button 
-                                    onClick={prevStep}
-                                    className="mt-4 text-[#CD5656] font-bold hover:underline"
-                                >
-                                    Go Back
-                                </button>
-                            </div>
-                        )}
+                        <CurrentStepComponent 
+                            key={`step-${currentStep}`}
+                            data={projectData}
+                            onDataChange={handleDataChange}
+                            onNext={nextStep}
+                            {...(currentStep === totalSteps ? { loading: isLoading } : {})}
+                            {...(currentStep > 1 ? { onBack: prevStep } : {})}
+                        />
                     </AnimatePresence>
                 </div>
 
-                {/* Footer Tip */}
                 <div className="mt-8 text-center">
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">
                         Your project will be visible to potential employers and other students.
@@ -121,4 +118,3 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
-
