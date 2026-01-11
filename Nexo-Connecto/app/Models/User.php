@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -20,7 +22,8 @@ class User extends Authenticatable
         'role',
         'google_id',
         'microsoft_id',
-        'has_seen_coins_intro'
+        'has_seen_coins_intro',
+        'is_admin'
     ];
 
     protected $hidden = [
@@ -49,5 +52,10 @@ class User extends Authenticatable
     public function coins()
     {
         return $this->hasMany(User_Coin::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return (bool) $this->is_admin;
     }
 }
