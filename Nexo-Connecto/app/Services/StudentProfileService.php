@@ -9,9 +9,20 @@ use App\Models\Course;
 use App\Models\Profile;
 use App\Models\StudentProfile;
 use App\Models\StudentSubjects;
+use App\Models\Project;
+use Illuminate\Database\Eloquent\Collection;
 
 class StudentProfileService
 {
+    public function getRecentProjects(int $userId, int $limit = 3): Collection
+    {
+        return Project::with(['projectDetail', 'projectVisual'])
+            ->where('user_id', $userId)
+            ->latest()
+            ->limit($limit)
+            ->get();
+    }
+
     public function createProfile(int $userId, ?string $avatar, string $bio): int
     {
         $profile = Profile::create([

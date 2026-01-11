@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\AddRolesSeeder;
 use Database\Seeders\SeedUniversities;
 use Database\Seeders\SeedMajors;
+use Database\Seeders\ProblemCategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // AddRolesSeeder::class
             // SeedUniversities::class
-            SeedMajors::class
+            // SeedMajors::class
+            ProblemCategorySeeder::class
         ]);
     }
 }

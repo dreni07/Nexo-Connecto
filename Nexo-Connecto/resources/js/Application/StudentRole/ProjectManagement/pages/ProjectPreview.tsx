@@ -238,7 +238,6 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project }) => {
                     </div>
                 </motion.div>
 
-                {/* Insights Section - Full Width Questions */}
                 <div className="space-y-20">
                     <div className="flex items-center gap-3 px-1">
                         <div className="w-12 h-12 rounded-2xl bg-[#CD5656]/5 flex items-center justify-center">

@@ -24,15 +24,16 @@ interface ProfileCompletion {
 interface IndexProps {
     user_details: UserDetails;
     profile_completion: ProfileCompletion;
+    recent_projects: any[];
 }
 
 export const StudentDashboardContext = createContext<UserDetails | undefined>(undefined);
 
 
 
-const Index = ({ user_details, profile_completion }: IndexProps) => {
+const Index = ({ user_details, profile_completion, recent_projects }: IndexProps) => {
 
-    console.log('Index Page Props:', { user_details, profile_completion });
+    console.log('Index Page Props:', { user_details, profile_completion, recent_projects });
 
     const [showOverlay, setShowOverlay] = useState(() => {
         if (typeof window === 'undefined') return false;
@@ -102,7 +103,7 @@ const Index = ({ user_details, profile_completion }: IndexProps) => {
                                     <ProgressTracker profile_completion={profile_completion} />
                                 </div>
                                 <div className="lg:col-span-11" style={{ gridRow: '1' }}>
-                                    <YourProjects />
+                                    <YourProjects projects={recent_projects} />
                                 </div>
 
                                 <div className="lg:col-span-13 grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch" style={{ gridRow: '2' }}>
