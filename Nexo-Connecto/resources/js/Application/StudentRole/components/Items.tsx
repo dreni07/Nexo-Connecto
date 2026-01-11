@@ -9,6 +9,7 @@ const Items = () => {
         { href: '/student/dashboard', label: 'Home' },
         { href: '/student/companies', label: 'Companies' },
         { href: '/student/feed', label: 'Feed' },
+        { href: '/student/problems', label: 'Problems' },
         { href: '/student/projects', label: 'Projects' },
         { href: '/student/preferences', label: 'Preferences' },
     ];
