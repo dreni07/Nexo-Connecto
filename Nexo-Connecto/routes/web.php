@@ -17,6 +17,7 @@ use App\Http\Controllers\Profile;
 use App\Http\Controllers\CoinController;
 use App\Http\Controllers\ApplicationPages;
 use App\Http\Controllers\ProjectManagement;
+use App\Http\Controllers\ProblemController;
 
 
 Route::middleware(['web', 'auth'])->group(function () {
@@ -35,6 +36,7 @@ Route::get('/search', SearchController::class)->middleware(['web', 'auth'])->nam
 Route::controller(CompanyDashboard::class)->middleware(['web','auth','role.company','profile.exists'])->group(function () {
     Route::get('company/dashboard','index')->name('company.dashboard');
 });
+
 
 
 
@@ -78,6 +80,10 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
 
     Route::controller(ApplicationPages::class)->group(function () {
         Route::get('/settings','settings')->name('settings');
+    });
+
+    Route::controller(ProblemController::class)->middleware(['web','auth','role.student'])->group(function () {
+        Route::get('/problems','index')->name('student.problems.index');
     });
     
 });
