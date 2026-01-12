@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProblemVersion extends Model
 {
     //
-
     protected $fillable = [
         'problem_id',
         'version',
@@ -18,12 +17,14 @@ class ProblemVersion extends Model
         'constraints',
         'sample_output_input',
         'official_solution',
-        'checksum'
+        'checksum',
+        'constraints_structure'
     ];
 
     protected $casts = [
         'sample_output_input' => 'array',
-        'test_cases' => 'array'
+        'test_cases' => 'array',
+        'constraints_structure' => 'array'
     ];
 
     public function problem(): BelongsTo

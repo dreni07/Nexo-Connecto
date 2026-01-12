@@ -5,10 +5,13 @@ namespace App\Filament\Resources\Problems\Tables;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\LinkAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\LinkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
+
 
 class ProblemsTable
 {
@@ -56,14 +59,14 @@ class ProblemsTable
             ->filters([
             ])
             ->actions([
-                Tables\Actions\Action::make('createProblemVersion')
+                Action::make('createProblemVersion')
                     ->label('Create Version')
                     ->icon('heroicon-o-plus-circle')
                     ->color('info')
                     ->url(fn ($record) => \App\Filament\Resources\ProblemVersions\ProblemVersionResource::getUrl('create', ['problem_id' => $record->id])),
 
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
                 // BulkActionGroup::make([

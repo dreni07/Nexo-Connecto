@@ -15,12 +15,19 @@ class ProblemController extends Controller
         $this->problemService = $problemService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+        $categoryId = $request->input('category_id');
+
         return Inertia::render('StudentRole/Problems/pages/Index', [
             'categories' => $this->problemService->getActiveCategories(),
-            'problems' => $this->problemService->getPaginatedProblems(50),
-            'trendingCompanies' => $this->problemService->getTrendingCompanies(10)
+            'problems' => $this->problemService->getPaginatedProblems(50, $search, $categoryId),
+            'trendingCompanies' => $this->problemService->getTrendingCompanies(10),
+            'filters' => [
+                'search' => $search,
+                'category_id' => $categoryId
+            ]
         ]);
     }
 }
