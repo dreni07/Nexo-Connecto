@@ -55,8 +55,14 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
     Route::controller(ProjectManagement::class)->group(function() {
         Route::get('/create-project', 'index')->name('student.project.create');
         Route::get('/project/{id}', 'show')->name('student.project.show');
+
+        Route::get('/projects','getAllProjects')->name('student.projects.all');
+        
         Route::post('/fetch-github-stack', 'fetchGithubStack')->name('student.project.fetch-github-stack');
         Route::post('/create-project', 'createProject')->name('student.project.store');
+
+        Route::delete('/delete-project/{id}','deleteProject')->name('student.project.delete');
+        Route::put('/update-project/{id}','updateProject')->name('student.project.update');
     });
     
         
@@ -84,6 +90,7 @@ Route::prefix('student')->middleware(['web','auth','role.student'])->group(funct
 
     Route::controller(ProblemController::class)->middleware(['web','auth','role.student'])->group(function () {
         Route::get('/problems','index')->name('student.problems.index');
+        Route::get('/problems/{id}','show')->name('student.problems.show');
     });
     
 });

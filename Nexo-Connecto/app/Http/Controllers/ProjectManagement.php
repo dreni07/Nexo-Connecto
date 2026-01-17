@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
 use App\Services\ProjectManagementService;
 use App\Models\Project;
+use Illuminate\Support\Facades\Validator;
+
 
 class ProjectManagement extends Controller
 {
@@ -42,6 +44,55 @@ class ProjectManagement extends Controller
         $this->projectService->createProject($data);
 
         return redirect()->route('student.dashboard')->with('success', 'Project created successfully!');
+    }
+
+    public function deleteProject(Request $request,int $id)
+    {
+        $this->projectService->deleteProject($id);
+
+        return back()->with('success', 'Project deleted successfully!');
+    }
+
+    public function updateProject(Request $request,int $id)
+    {
+        $validated = Validator::make($request->all(),[
+            'title' => 'required',
+            'summary' => 'required',
+            'tags' => 'required|array',
+            'difficulty' => 'required',
+            'status' => 'required',
+            'images' => 'nullable|array',
+            'liveDemoUrl' => 'nullable|url',
+            'githubUrl' => 'nullable|url',
+            'techStack' => 'required|array',
+            'fixedQuestions' => 'required|array',
+            'learningQuestions' => 'required|array',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()],422);
+        }
+
+        $results = $this->projectService->updateProject($id,$request->all());
+
+        return response()->json($results);
+    }
+
+    public function getAllProjects(Request $request) 
+    {
+        $user = $request->user();
+        $projects = $this->projectService->getAllProjectsForUser($user->id);
+
+        $user_details = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => $user->avatar
+        ];
+
+        return Inertia::render('StudentRole/ProjectManagement/pages/AllProjects', [
+            'projects' => $projects,
+            'user_details' => $user_details
+        ]);
     }
 
     public function fetchGithubStack(Request $request)

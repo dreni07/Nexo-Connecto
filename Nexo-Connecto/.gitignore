@@ -9,9 +9,11 @@
 /resources/js/wayfinder
 /storage/*.key
 /storage/pail
+/storage/framework
 /vendor
 /public/fonts
 /public/js/filament
+/.github/workflows
 .DS_Store
 .env
 .env.backup
@@ -28,3 +30,4 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/tests

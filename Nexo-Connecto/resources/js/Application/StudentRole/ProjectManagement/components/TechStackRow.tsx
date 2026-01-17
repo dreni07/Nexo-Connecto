@@ -30,3 +30,5 @@ const TechStackRow: React.FC<TechStackRowProps> = ({ name, percentage }) => (
 export default TechStackRow;
 
 
+
+

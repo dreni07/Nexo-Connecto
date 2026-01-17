@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Project;
 
 class ProjectDetail extends Model
 {
@@ -25,4 +26,9 @@ class ProjectDetail extends Model
         'project_tech_stack' => 'array',
         'project_learning_answers' => 'array'
     ];
+
+    public function project()
+    {
+        return $this->hasOne(Project::class,'project_detail_id','id');
+    }
 }

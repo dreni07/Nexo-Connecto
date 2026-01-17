@@ -30,4 +30,12 @@ class ProblemController extends Controller
             ]
         ]);
     }
+
+    public function show(Request $request,int $id)
+    {
+        return Inertia::render('StudentRole/Problems/pages/ProblemDetails', [
+            'problem_details' => $this->problemService->getProblemDetails($id),
+            'available_languages' => $this->problemService->getAvailableLanguages()
+        ]);
+    }
 }

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Problem;
 use App\Models\ProblemCategory;
 use App\Models\CompanyProfile;
+use App\Models\ProblemVersion;
+use App\Models\Language;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -53,6 +55,28 @@ class ProblemService
     {
         return CompanyProfile::take($limit)
             ->get(['id', 'company_name', 'company_pictures']);
+    }
+
+    public function getProblemDetails(int $id): ProblemVersion
+    {
+        // find the problem
+        $problem = Problem::findOrFail($id);
+
+        // find the last version of the particular problem with problem relationship
+        return $problem->versions()
+            ->with('problem')
+            ->orderBy('id', 'desc')
+            ->firstOrFail();
+    }
+
+    /**
+     * Get all available programming languages for the editor.
+     */
+    public function getAvailableLanguages(): Collection
+    {
+        return Cache::remember('available_languages', 3600, function () {
+            return Language::all();
+        });
     }
 }
 
