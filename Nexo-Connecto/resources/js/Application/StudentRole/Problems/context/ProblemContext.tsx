@@ -13,29 +13,36 @@ interface ProblemContextType {
 
 const ProblemContext = createContext<ProblemContextType | undefined>(undefined);
 
-const BOILERPLATE: Record<string, string> = {
-    javascript: "// Write your solution here...\n\nfunction solution() {\n\n}",
-    typescript: "// Write your solution here...\n\nfunction solution(): void {\n\n}",
-    python: "# Write your solution here...\n\ndef solution():\n    pass",
-    java: "// Write your solution here...\n\nclass Solution {\n    public void solution() {\n\n    }\n}",
-    cpp: "// Write your solution here...\n\nclass Solution {\npublic:\n    void solution() {\n\n    }\n};",
-    csharp: "// Write your solution here...\n\npublic class Solution {\n    public void Solution() {\n\n    }\n}",
-    php: "<?php\n\n// Write your solution here...\n\nclass Solution {\n    /**\n     * @return void\n     */\n    function solution() {\n\n    }\n}",
-    ruby: "# Write your solution here...\n\ndef solution\n\nend",
-    go: "// Write your solution here...\n\npackage main\n\nfunc solution() {\n\n}",
-    swift: "// Write your solution here...\n\nclass Solution {\n    func solution() {\n\n    }\n}",
-};
+interface Language {
+    id: number;
+    language_name: string;
+    processed_template?: string;
+}
 
-export const ProblemProvider = ({ children }: { children: ReactNode }) => {
-    const [language, setLanguageState] = useState("javascript");
-    const [code, setCode] = useState(BOILERPLATE.javascript);
+interface ProblemProviderProps {
+    children: ReactNode;
+    availableLanguages: Language[];
+}
+
+export const ProblemProvider = ({ children, availableLanguages }: ProblemProviderProps) => {
+    // Helper to find template for a language
+    const getTemplateForLanguage = (langName: string) => {
+        const lang = availableLanguages.find(
+            l => l.language_name.toLowerCase() === langName.toLowerCase()
+        );
+        return lang?.processed_template || `// Write your solution in ${langName} here...`;
+    };
+
+    const initialLanguage = availableLanguages[0]?.language_name.toLowerCase() || "javascript";
+    
+    const [language, setLanguageState] = useState(initialLanguage);
+    const [code, setCode] = useState(getTemplateForLanguage(initialLanguage));
     const [theme, setTheme] = useState('vs-dark');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const setLanguage = (lang: string) => {
         setLanguageState(lang);
-        const template = BOILERPLATE[lang.toLowerCase()] || `// Write your solution in ${lang} here...`;
-        setCode(template);
+        setCode(getTemplateForLanguage(lang));
     };
 
     return (

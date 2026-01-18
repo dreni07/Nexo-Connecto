@@ -71,7 +71,16 @@ class LanguageTemplateForm
                                     default => null,
                                 };
                             })
-                            ->helperText('The default code structure provided to students when they start a problem in this language.'),
+                            ->helperText(function () {
+                                return new \Illuminate\Support\HtmlString('
+                                    The default code structure provided to students. You can use the following placeholders: <br>
+                                    <ul class="list-disc ml-5">
+                                        <li><strong>{functionName}</strong> - The name of the function.</li>
+                                        <li><strong>{args}</strong> - The comma-separated list of parameter names.</li>
+                                        <li><strong>{args_docs}</strong> - JSDoc/Doxygen style documentation for parameters.</li>
+                                    </ul>
+                                ');
+                            }),
                     ]),
             ]);
     }

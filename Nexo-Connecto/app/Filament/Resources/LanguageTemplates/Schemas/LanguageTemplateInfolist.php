@@ -4,7 +4,6 @@ namespace App\Filament\Resources\LanguageTemplates\Schemas;
 
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\CodeEntry;
 use Filament\Schemas\Schema;
 
 class LanguageTemplateInfolist
@@ -18,9 +17,11 @@ class LanguageTemplateInfolist
                         TextEntry::make('language.language_name')
                             ->label('Language'),
 
-                        CodeEntry::make('template')
+                        TextEntry::make('template')
                             ->label('Code Template')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->formatStateUsing(fn (string $state): string => "```\n{$state}\n```")
+                            ->html(),
                     ]),
             ]);
     }

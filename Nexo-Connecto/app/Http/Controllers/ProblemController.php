@@ -33,9 +33,11 @@ class ProblemController extends Controller
 
     public function show(Request $request,int $id)
     {
+        $problemDetails = $this->problemService->getProblemDetails($id);
+        
         return Inertia::render('StudentRole/Problems/pages/ProblemDetails', [
-            'problem_details' => $this->problemService->getProblemDetails($id),
-            'available_languages' => $this->problemService->getAvailableLanguages()
+            'problem_details' => $problemDetails,
+            'available_languages' => $this->problemService->getAvailableLanguages($problemDetails)
         ]);
     }
 }

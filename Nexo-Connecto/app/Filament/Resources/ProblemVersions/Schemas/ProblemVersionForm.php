@@ -8,6 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
+use App\Models\ProblemVersion;
 
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
@@ -36,7 +37,7 @@ class ProblemVersionForm
                                     return '1.0';
                                 }
 
-                                $latestVersion = \App\Models\ProblemVersion::where('problem_id', $problemId)
+                                $latestVersion = ProblemVersion::where('problem_id', $problemId)
                                     ->orderBy('id', 'desc')
                                     ->first();
 
@@ -57,11 +58,41 @@ class ProblemVersionForm
                             ->required(),
                     ]),
 
+                Section::make('Code Definition')
+                    ->description('Define the function signature that will be used in the code templates.')
+                    ->columns(1)
+                    ->statePath('constraints_structure')
+                    ->schema([
+                        TextInput::make('function_name')
+                            ->label('Function Name')
+                            ->placeholder('e.g. twoSum')
+                            ->required(),
+                        
+                        Repeater::make('parameters')
+                            ->label('Parameters')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Parameter Name')
+                                    ->placeholder('e.g. nums')
+                                    ->required(),
+                                Select::make('type')
+                                    ->label('Parameter Type')
+                                    ->options(function () {
+                                        $types = require app_path('Helpers/LanguageParameterHelper.php');
+                                        return array_combine($types, array_map('ucfirst', $types));
+                                    })
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->createItemButtonLabel('Add Parameter')
+                            ->default([]),
+                    ]),
+
                 Section::make('Test Cases')
                     ->description('Define the inputs and expected outputs for the code evaluation.')
                     ->schema([
                         Repeater::make('test_cases')
-                            ->itemLabel(fn (array $state): ?string => $state['explanation'] ?? 'Test Case')
+                            ->itemLabel(fn ($state): ?string => is_array($state) ? ($state['explanation'] ?? 'Test Case') : 'Test Case')
                             ->columns(2)
                             ->schema([
                                 Textarea::make('input')
@@ -88,7 +119,10 @@ class ProblemVersionForm
                     ->label('Sample Output/Input (Manual override)')
                     ->helperText('Usually derived from public test cases, but can be customized here.')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->formatStateUsing(function ($state) {
+                        return is_array($state) ? json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : $state;
+                    }),
             ]);
     }
 }

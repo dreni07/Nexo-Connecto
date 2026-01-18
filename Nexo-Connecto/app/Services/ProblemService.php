@@ -7,6 +7,7 @@ use App\Models\ProblemCategory;
 use App\Models\CompanyProfile;
 use App\Models\ProblemVersion;
 use App\Models\Language;
+use App\Models\LanguageParameterMapping;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -69,14 +70,74 @@ class ProblemService
             ->firstOrFail();
     }
 
-    /**
-     * Get all available programming languages for the editor.
-     */
-    public function getAvailableLanguages(): Collection
+    public function getAvailableLanguages(?ProblemVersion $problemVersion = null): Collection
     {
-        return Cache::remember('available_languages', 3600, function () {
-            return Language::all();
-        });
+        $languages = Language::with('template')->get();
+
+        if ($problemVersion) {
+            $languages->each(function ($language) use ($problemVersion) {
+                if ($language->template) {
+                    $language->processed_template = $this->processTemplate(
+                        $language->template->template,
+                        $problemVersion,
+                        $language->language_name
+                    );
+                } else {
+                    $language->processed_template = "";
+                }
+            });
+        }
+
+        return $languages;
+    }
+
+  
+    private function processTemplate(string $template, ProblemVersion $problemVersion, string $languageName): string
+    {
+        $metadata = $problemVersion->constraints_structure ?? [];
+        $functionName = $metadata['function_name'] ?? 'solution';
+        $parameters = $metadata['parameters'] ?? [];
+
+        // Fetch mapping for this language
+        $mappingModel = LanguageParameterMapping::whereHas('language', function ($query) use ($languageName) {
+            $query->where('language_name', $languageName);
+        })->first();
+
+        $typeMapping = $mappingModel ? $mappingModel->language_parameter_mapping : [];
+
+        $paramNames = array_map(fn ($p) => $p['name'], $parameters);
+        $args = implode(', ', $paramNames);
+
+        $argsDocs = "";
+        $isJsOrTs = in_array(strtolower($languageName), ['javascript', 'js', 'typescript', 'ts']);
+        $isPhp = strtolower($languageName) === 'php';
+
+        if ($isJsOrTs || $isPhp) {
+            $docs = [];
+            foreach ($parameters as $p) {
+                $standardType = $p['type'] ?? 'any';
+                $type = $typeMapping[$standardType] ?? $standardType;
+                $name = $p['name'] ?? 'arg';
+                $docs[] = " * @param {{$type}} {$name}";
+            }
+            $argsDocs = implode("\n", $docs);
+        } else if (in_array(strtolower($languageName), ['python', 'py'])) {
+            $docs = [];
+            foreach ($parameters as $p) {
+                $standardType = $p['type'] ?? 'any';
+                $type = $typeMapping[$standardType] ?? $standardType;
+                $name = $p['name'] ?? 'arg';
+                $docs[] = "    :param {$name}: {$type}";
+            }
+            $argsDocs = implode("\n", $docs);
+        }
+
+        // Replace placeholders
+        $processed = str_replace('{functionName}', $functionName, $template);
+        $processed = str_replace('{args}', $args, $processed);
+        $processed = str_replace('{args_docs}', $argsDocs, $processed);
+
+        return $processed;
     }
 }
 

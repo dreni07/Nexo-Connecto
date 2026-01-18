@@ -44,6 +44,7 @@ interface ProblemVersion {
 interface Language {
     id: number;
     language_name: string;
+    processed_template?: string;
 }
 
 interface ProblemDetailsProps {
@@ -53,7 +54,7 @@ interface ProblemDetailsProps {
 
 const ProblemDetails = ({ problem_details, available_languages }: ProblemDetailsProps) => {
     return (
-        <ProblemProvider>
+        <ProblemProvider availableLanguages={available_languages}>
             <div className="h-screen flex flex-col bg-white overflow-hidden font-outfit">
                 <Head title={`${problem_details.problem.id}. ${problem_details.problem.problem_title}`} />
 
